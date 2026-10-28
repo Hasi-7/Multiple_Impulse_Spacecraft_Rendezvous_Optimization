@@ -1,0 +1,208 @@
+\documentclass[11pt,letterpaper]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage[T1]{fontenc}
+\usepackage{amsmath,amssymb}
+\usepackage{booktabs}
+\usepackage{enumitem}
+\usepackage[hidelinks]{hyperref}
+\setlist[itemize]{nosep,topsep=4pt}
+
+\title{Multiple-Impulse Spacecraft Rendezvous Optimization}\\
+\author{Hasnain}
+\date{\today}
+
+% Replace the prompts with your own writing as the report develops.
+% Include only experiments and checks actually performed.
+% This outline is a suggested structure, not an assessment rubric.
+\newcommand{\prompt}[1]{\par\noindent\textit{Writing prompt:} #1\par}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+\prompt{Write this last. In one paragraph, state the rendezvous problem,
+the model and search method used, the main quantitative result, and the
+most important conclusion or limitation. Leave results unspecified until
+you have verified them.}
+\end{abstract}
+
+\section{Introduction and Aim}
+\subsection{Spacecraft Trajectory Optimization Problem}
+This problem discusses how a spacecraft in a distnct orbit from another object in an orbit can rendezvous at a specific location in space at a particular time
+with the same velocity while minimizing the amount of fuel usage. For this specific project, we will be focusing on 2 spacecrafts in orbit around Earth where one
+is defined as the \textit{chaser} spacecraft and the other is the \textit{target} spacecraft. % Requires a citation for the project outline provided by Mingde intext here
+
+\subsection{Project Aim and Research Question} % This section as a whole should be cited with Mingde's project outline as he is the one who defined these things for me
+This leads us to the question that I aim to work around:\\
+\center{How can a spacecraft use a small number of engine burns to rendezvous with another spacecraft orbiting Earth?}\\ % This needs a citation for the project outline provided by Mingde
+Thus, the aim of this project that follows is to develop a simulator for orbital rendezvous missions. I will begin with a simplified model in 2 dimenions
+and only considering the Earth as the only relevant gravitational body. I will look to minimize the following 2 errors:
+
+Position Error:
+\begin{equation}
+J_r = \abs{r_c(T) - r_t(T)}^2
+\label{eq:postion_error}
+\end{equation}
+
+Velocity Error: 
+\begin{equation}
+J_v = \abs{v_c(T) - v_t(T)}^2
+\label{eq:velocity_error}
+\end{equation}
+
+In addition to position and velocity error, I will be taking into account fuel usage with the assumption that fuel usage is directly proportional to the change in velocity
+in the $x$, $y$, and $z$ directions. These three will be combined into the following cost function:
+
+\begin{equation}
+J = \omega_{r}J_{r} + \omega_{v}J_{v} + \omega_{\delta$v$}\sum_{i} \abs(\delta$v_i$)
+\label{eq:cost_function}
+\end{equation}
+
+After testing with the 2 dimensional model, the aim will be to expand to 3 dimensions and will consider the Moon, Sun and Jupiter as
+gravitationally relevant bodies to the motion of the spacecrafts.
+
+\section{Physical Model and Problem Definition}
+\subsection{Assumptions and equations of motion}
+To begin, the following assumptions will be used for the 2 dimensional model
+\begin{itemize}
+  \item Planar motion in an Earth-centred inertial Cartesian frame.
+  \item Central gravity with constant gravitational parameter $\mu$.
+  \item An uncontrolled target and a chaser with instantaneous burns.
+  \item Fuel usage is directly proportional to change in velocity of a burn.
+\end{itemize}
+For each spacecraft, position is defined as $\mathbf r=\begin{bmatrix} x \\ y \end{bmatrix}$ and velocity is defined as $\mathbf v=(v_x,v_y)$:
+\begin{equation}
+  \dot{\mathbf r}=\mathbf v,
+  \qquad \dot{\mathbf v}=-\mu\frac{\mathbf r}{\|\mathbf r\|^3}.
+  \label{eq:ODE}
+\end{equation}
+Equation~\eqref{eq:ODE} defines the ODE that the spacecraft states will be modelled after, with $\mu$ defined as the gravitational parameter and for the 2 dimensional model
+is the gravitational parameter of Earth:
+\begin{align*}
+  \mu&=GM
+  \mu&=3.986\times10^{14}
+\end{align*}
+At burn time $t_i$, position is continuous and velocity changes according to
+\begin{equation}
+  \mathbf v(t_i^+)=\mathbf v(t_i^-)+\Delta\mathbf v_i.
+  \label{eq:instantaneous_burns}
+\end{equation}
+Equation~\eqref{eq:instantaneous_burns} is the mathematical representation of the assumption that all burns are applied as instantaneous burns, meaning that position does
+not change but the velocity changes instantly right after time $t_i$. 
+
+For the 3 dimensional model, the assumptions change slightly. The first assumption changes from 
+\subsection{Scenario and definition of success}
+We can begin with defining the initial state of a spacecraft using the position and vel
+\prompt{Specify both initial states, units, final time $T$, number of burns,
+and allowed burn magnitudes and times. Define acceptable final separation
+and relative speed before interpreting a result as successful rendezvous.}
+\begin{align}
+  e_r &= \|\mathbf r_c(T)-\mathbf r_t(T)\|,\\
+  e_v &= \|\mathbf v_c(T)-\mathbf v_t(T)\|,\\
+  \Delta v_{\mathrm{total}} &= \sum_{i=1}^{N}\|\Delta\mathbf v_i\|.
+\end{align}
+\prompt{Distinguish final separation from the minimum separation during the
+trajectory. Describe total $\Delta v$ as a measure of manoeuvre effort;
+it is not a direct measurement of propellant mass.}
+
+\section{Computational Method}
+\subsection{Trajectory propagation}
+\prompt{Describe the numerical solver, tolerances, target propagation,
+and how chaser propagation stops and restarts at each burn. Explain how
+the states of both spacecraft are compared at the same final time.}
+
+\subsection{Objective function and search}
+The intended weighted objective has the form
+\begin{equation}
+  J=w_r e_r^2+w_v e_v^2+w_{\Delta v}\Delta v_{\mathrm{total}}.
+\end{equation}
+\prompt{Check that the implemented objective matches this expression,
+particularly how burn magnitudes are extracted from stored burn/time pairs.
+Report weights and their scaling: squared position error, squared velocity
+error, and total $\Delta v$ have different units. A low weighted cost alone
+does not establish that both rendezvous tolerances were met.}
+\begin{itemize}
+  \item Identify the decision variables and their bounds.
+  \item Explain differential evolution at a practical level.
+  \item State how burn ordering and invalid candidates are handled.
+  \item Record the random seed, search budget, and stopping criteria.
+  \item Include GPU acceleration only if it forms part of the evaluated work;
+        support any speed claim with comparable measured runs.
+\end{itemize}
+
+\section{Simulation Checks}
+\prompt{Present checks actually performed and their outcomes. Useful checks
+include a circular-orbit reference case, conservation of energy and angular
+momentum between burns, and repeating a candidate trajectory with tighter
+solver tolerances. Explain what each check establishes.}
+\begin{itemize}
+  \item Suggested figure: reference orbit or conservation error over time.
+  \item Report whether numerical differences are small relative to the
+        rendezvous tolerances used in the report.
+\end{itemize}
+
+\section{Experiments and Results}
+\subsection{Baseline and best trajectory found}
+\prompt{Compare a clearly defined baseline, such as no burns or a manual
+strategy, with the best sequence found for the same initial conditions
+and final time. Fill the table with verified values and identify units.}
+\begin{table}[htbp]
+  \centering
+  \caption{Rendezvous performance. Blank cells await verified results.}
+  \begin{tabular}{lccc}
+    \toprule
+    Strategy & $e_r$ (m) & $e_v$ (m/s) & Total $\Delta v$ (m/s)\\
+    \midrule
+    Baseline & & & \\
+    Best sequence found & & & \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+\begin{itemize}
+  \item Plot both trajectories with burn locations and final positions.
+  \item Plot separation and relative speed against time, marking burns.
+  \item List each selected burn's time, signed magnitude, and direction.
+  \item State explicitly whether both success tolerances were met.
+\end{itemize}
+
+\subsection{Selected comparisons}
+\prompt{Choose only comparisons that answer your research question and
+fit the available time. Possible variables include burn count, objective
+weights, or search budget. Keep other conditions fixed. For a stochastic
+search, use repeated seeds if assessing reliability. Report unsuccessful
+cases when they help explain a limitation.}
+
+\section{Discussion}
+\prompt{Explain what the results mean, connecting trajectory changes to
+the physics rather than simply describing plots.}
+\begin{itemize}
+  \item Why did the chosen burn sequence improve the rendezvous attempt?
+  \item How did timing and velocity changes affect relative motion?
+  \item What trade-offs are supported by the experiments?
+  \item Were remaining errors associated with numerical accuracy, search
+        limits, burn restrictions, or objective weighting? Distinguish
+        evidence from possible explanations.
+  \item What do the simplified dynamics omit, and how does that limit
+        conclusions about a real mission?
+\end{itemize}
+\prompt{Use ``best solution found within the tested search'' unless you
+have evidence of global optimality. Avoid general conclusions about burn
+count or fuel savings from a single case.}
+
+\section{Conclusion and Future Work}
+\prompt{Answer the central question directly. Summarize the strongest
+quantitative finding, the main physical insight, and the principal
+limitation. Suggest one or two specific next steps justified by the results.}
+
+\section*{References}
+\prompt{Cite the project brief, any external theory used, numerical-method
+documentation, and any adapted code. Add bibliographic entries as you write.}
+
+\appendix
+\section{Reproducibility Details}
+\prompt{Record the script/version used, software dependencies, exact initial
+states, solver and optimizer settings, seeds, objective weights, and final
+burn sequence. Include supporting checks or additional plots here when
+they would interrupt the main argument.}
+
+\end{document}
