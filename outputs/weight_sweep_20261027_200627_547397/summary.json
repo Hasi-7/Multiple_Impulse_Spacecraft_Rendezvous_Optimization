@@ -1,0 +1,28 @@
+{
+  "stop_reason": "completed",
+  "completed_stages": [
+    "coarse",
+    "refined"
+  ],
+  "trials_completed": 1252,
+  "valid_trials": 552,
+  "best": {
+    "stage": "refined",
+    "w_position": 0.05,
+    "w_velocity": 50000.0,
+    "w_delta_v": 250000.0,
+    "status": "ok",
+    "message": "",
+    "final_separation_m": 589358.4936411936,
+    "minimum_sampled_separation_m": 527103.9752558497,
+    "minimum_time_s": 2860.0878610080936,
+    "final_relative_speed_m_s": 299.3743808847569,
+    "total_delta_v_m_s": 999.7490479319655,
+    "comparison_score": 43696847.39521293,
+    "minimum_sampled_surface_altitude_m": 315502.3706906261,
+    "optimizer_score": 22098359959.840412,
+    "trajectory_score": 22098359959.840412,
+    "burns_json": "[[499.90988671838664, 60.112943469722495], [-499.83916121357885, 1380.2635830242812]]",
+    "elapsed_s": 19.364716899995983
+  }
+}

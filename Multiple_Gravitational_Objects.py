@@ -2,51 +2,54 @@ from scipy.integrate import solve_ivp
 from scipy.optimize import differential_evolution
 import numpy as np
 import matplotlib.pyplot as plt
+import celestial_body_simulator as system
 
-mu = 3.986 * 10**14
-earth_radius = 6.371e6
-theta = np.linspace(0, 2*np.pi, 300)
-starting_distance_x = 7_000_000
-starting_distance_y = 0
+# System is defined with Sun at the origin, Earth, Moon and Jupiter as the significantly relevant gravitational bodies
     
+def n_body_ode(t, state, body_solution):
 
-def two_body_ode(t, state):
-    # unpack state
+    # Starting 3D State
     x = state[0]
     y = state[1]
-    vx = state[2]
-    vy = state[3]
-    
+    z = state[2]
+    vx = state[3]
+    vy = state[4]
+    vz = state[5]
 
-    # compute distance from Earth
-    r = (x**2 + y**2)**0.5
+    body_state_at_t = body_solution.sol(t)
+    spacecraft_position = np.asarray(state[:3])
 
-    # compute acceleration from gravity
-    ax = -mu * (x / r**3)
-    ay = -mu * (y / r**3)
+    # Acceleration due to net gravity of system
 
-    # return derivatives
-    return [vx, vy, ax, ay]
+    acceleration = np.zeros(3)
+
+    for i in range(len(system.BODY_NAMES)):
+        body_position = body_state_at_t[6*i : 6*i + 3]
+        relative_position = spacecraft_position - body_position
+        distance = np.linalg.norm(relative_position)
+        acceleration += -system.MU[i] * (relative_position/ distance**3)
+
+    ax, ay, az = acceleration
+
+    return [vx, vy, vz, ax, ay, az]
 
 def burn_size(v, delta):
     unit_v = v/np.linalg.norm(v)
     return delta * unit_v
 
 def apply_burn(state, delta_v):
-    # state = [x, y, vx, vy]
-    # delta_v = [dvx, dvy]
+    # state = [x, y, z, vx, vy, vz]
+    # delta_v = [dvx, dvy, dvz]
     # return the updated state
-    return [state[0], state[1], state[2] + delta_v[0], state[3] + delta_v[1]]
+    return [state[0], state[1], state[2], state[3] + delta_v[0], state[4] + delta_v[1], state[5] + delta_v[2]]
 
 def error(c_state, t_state):
-    J_r = abs(c_state[0] - t_state[0])**2 + abs(c_state[1] - t_state[1])**2
-    J_v = abs(c_state[2] - t_state[2])**2 + abs(c_state[3] - t_state[3])**2
+    J_r = abs(c_state[0] - t_state[0])**2 + abs(c_state[1] - t_state[1])**2 + abs(c_state[2] - t_state[2])**2
+    J_v = abs(c_state[3] - t_state[3])**2 + abs(c_state[4] - t_state[4])**2 + abs(c_state[5] - t_state[5])**2
     return J_r, J_v
 
 def fuel_usage(burns):
     return sum(np.linalg.norm(delta_v) for delta_v, _ in burns)
-
-# Switch to List of Tuples
 
 def cost(errors, weights, burns):
     J_r, J_v = errors
@@ -58,23 +61,12 @@ def cost(errors, weights, burns):
         + w_delta_v * fuel_usage(burns)
     )
 
-def period(state):
-    r = (state[0]**2 + state[1]**2)**0.5
-    v = (state[2]**2 + state[3]**2)**0.5
-    a = (-1)*((mu*r)/((r*(v**2)) - (2*mu)))
-    return 2*np.pi*(((a**3)/mu)**0.5)
-
-def synodic_period(c_state, t_state):
-    T1 = period(c_state)
-    T2 = period(t_state)
-    return ((T1*T2)/(abs(T2-T1)))
-
 # Assumptions:
 # All variables are provided correctly
 # Burns are executed in the order that they are stored in the burns array
 # Every burn is unique
 
-def score(burns, chaser_state, t_sol, t_span, weights):
+def score(burns, chaser_state, t_sol, t_span, weights, body_solution):
     burns = np.asarray(burns).reshape(-1, 2)
 
     burn_times = burns[:, 1]
@@ -89,30 +81,28 @@ def score(burns, chaser_state, t_sol, t_span, weights):
     previous_time = t_span[0]
     c_sol = 0
     for dv, time in burns:
-        
-
-        
-        c_sol = solve_ivp(two_body_ode, (previous_time, time), chaser_state, method='DOP853', rtol=1e-6)
+        c_sol = solve_ivp(n_body_ode, (previous_time, time), chaser_state, args=(body_solution,), method='DOP853', rtol=1e-6)
         
         c_before_burn_state = c_sol.y[:, -1]
-        burn = burn_size(c_before_burn_state[2:4], dv)
+        burn = burn_size(c_before_burn_state[3:6], dv)
         chaser_state = apply_burn(c_before_burn_state, burn)
 
         previous_time = time
 
-    c_final_sol = solve_ivp(two_body_ode, (previous_time, t_span[1]), chaser_state, method='DOP853', rtol=1e-6)
+    c_final_sol = solve_ivp(n_body_ode, (previous_time, t_span[1]), chaser_state, args=(body_solution,), method='DOP853', rtol=1e-6)
     
     c_final_state = c_final_sol.y[:, -1]
     t_final_state = t_sol.sol(t_span[1])
 
     return cost(error(c_final_state, t_final_state), weights, burns)
 
-def trajectory(c_state, t_state, t_span, burns, weights, samples_per_segment=1000):
+def trajectory(c_state, t_state, t_span, burns, weights, body_solution, samples_per_segment=1000):
     target_times = np.linspace(t_span[0], t_span[1], samples_per_segment * (len(burns) + 1))
     target_sol = solve_ivp(
-        two_body_ode,
+        n_body_ode,
         t_span,
         t_state,
+        args=(body_solution,),
         t_eval=target_times,
         dense_output=True,
         method='DOP853',
@@ -125,22 +115,22 @@ def trajectory(c_state, t_state, t_span, burns, weights, samples_per_segment=100
     burn_states = []
     previous_time = t_span[0]
     current_state = c_state
-    t_sol = 0
+    t_sol = target_sol
     target_loc_burn_n = []
 
 
     for dv, burn_time in burns:
         segment_times = np.linspace(previous_time, burn_time, samples_per_segment)
         segment_sol = solve_ivp(
-            two_body_ode,
+            n_body_ode,
             (previous_time, burn_time),
             current_state,
+            args=(body_solution,),
             t_eval=segment_times,
             method='DOP853',
             rtol=1e-6
         )
 
-        t_sol = solve_ivp(two_body_ode, t_span, t_state, t_eval=target_times, dense_output=True, method='DOP853', rtol=1e-6)
         target_loc_burn_n.append(t_sol.sol(segment_times))
 
         start_index = 0 if not chaser_times else 1
@@ -152,15 +142,16 @@ def trajectory(c_state, t_state, t_span, burns, weights, samples_per_segment=100
         burn_states.append(state_before_burn.copy())
         current_state = apply_burn(
             state_before_burn,
-            burn_size(state_before_burn[2:4], dv)
+            burn_size(state_before_burn[3:6], dv)
         )
         previous_time = burn_time
 
     final_times = np.linspace(previous_time, t_span[1], samples_per_segment)
     final_sol = solve_ivp(
-        two_body_ode,
+        n_body_ode,
         (previous_time, t_span[1]),
         current_state,
+        args=(body_solution,),
         t_eval=final_times,
         method='DOP853',
         rtol=1e-6
@@ -179,104 +170,120 @@ def trajectory(c_state, t_state, t_span, burns, weights, samples_per_segment=100
         np.asarray(burn_states)
     ), cost(error(chaser_states[len(chaser_states)-1], t_final_state), weights, burns), target_loc_burn_n
 
-def rendezvous(c_state0, t_state0, num_burns, weights, t_span):
+def rendezvous(c_state0, t_state0, num_burns, weights, t_span, body_solution):
     bounds = [(-500, 500), (t_span[0] + 60, t_span[1] - 60)] * num_burns
     t_eval = np.linspace(t_span[0], t_span[1], 5000)
-    t_sol = solve_ivp(two_body_ode, t_span, t_state0, t_eval=t_eval, dense_output=True, method='DOP853', rtol=1e-6)
+    t_sol = solve_ivp(n_body_ode, t_span, t_state0, args=(body_solution,), t_eval=t_eval, dense_output=True, method='DOP853', rtol=1e-6)
     result = differential_evolution(
         score, 
         bounds=bounds,
-        args=(c_state0, t_sol, t_span, weights),
+        args=(c_state0, t_sol, t_span, weights, body_solution),
         rng=np.random.default_rng(42))
 
     return result.x, result.fun
 
 
+def plot_rendezvous(history, body_solution):
+    """Plot 3D separation and spacecraft tracks in two translating frames.
 
-# set margin of error of 50 meters from target to define rendezvous complete
-# def rendezvous(c_state0, t_state0, t_span, t_eval):
-#     J_r, J_v = error(c_state0, t_state0)
-#     burns = []
-#     c_sol = []
-#     t_sol = solve_ivp(two_body_ode, t_span, t_state0, t_eval=t_eval, dense_output=True, method='DOP853', rtol=1e-6)
+    Each spacecraft position is offset by the reference body's position at
+    that same time. Axes remain aligned with the J2000 ecliptic frame.
+    """
+    chaser_times, chaser_states, target_sol, burn_times, burn_states = history
+    target_at_chaser = target_sol.sol(chaser_times)
+    separation = np.linalg.norm(chaser_states[:, :3] - target_at_chaser[:3].T, axis=1)
+    target_at_burns = target_sol.sol(burn_times)
+    burn_separations = np.linalg.norm(burn_states[:, :3] - target_at_burns[:3].T, axis=1)
 
-#     # First determine the relative phase angle of the target and chaser (In radians)
-#     while(J_r > 2500 and J_v == 0):
+    fig = plt.figure(figsize=(19, 6))
+    distance_ax = fig.add_subplot(131)
+    distance_ax.plot(chaser_times / 3600, separation / 1000, label="Chaser-target distance")
+    distance_ax.scatter(burn_times / 3600, burn_separations / 1000, color="red", label="Burns")
+    for number, (time, distance) in enumerate(zip(burn_times, burn_separations), 1):
+        distance_ax.axvline(time / 3600, color="red", linestyle="--", linewidth=0.8, alpha=0.5)
+        distance_ax.annotate(f"Burn {number}", (time / 3600, distance / 1000),
+                             xytext=(5, 7), textcoords="offset points")
+    distance_ax.set(xlabel="Time (hours)", ylabel="3D separation (km)",
+                    title="Rendezvous separation over time")
+    distance_ax.grid(True)
+    distance_ax.legend()
 
-#         theta_c = np.arctan2(c_state0[1], c_state0[0])
-#         theta_t = np.arctan2(t_state0[1], t_state0[0])
-#         phase_error = (theta_t - theta_c + np.pi) % (2 * np.pi) - np.pi
+    sun_ax = fig.add_subplot(132, projection="3d")
+    earth_ax = fig.add_subplot(133, projection="3d")
+    for ax, reference_index, scale, unit, title in (
+        (sun_ax, 0, system.AU, "AU", "Sun-centered system and spacecraft"),
+        (earth_ax, 1, 1000.0, "km", "Earth-centered rendezvous close-up"),
+    ):
+        start = 6 * reference_index
+        # The target, chaser and burns have different sampling grids.
+        chaser_reference = body_solution.sol(chaser_times)[start:start + 3].T
+        target_reference = body_solution.sol(target_sol.t)[start:start + 3]
+        burn_reference = body_solution.sol(burn_times)[start:start + 3].T
+        chaser_xyz = (chaser_states[:, :3] - chaser_reference) / scale
+        target_xyz = (target_sol.y[:3] - target_reference).T / scale
+        burn_xyz = (burn_states[:, :3] - burn_reference) / scale
 
-#         angular_momentum = c_state0[0] * c_state0[3] - c_state0[1] * c_state0[2]
-#         orbit_direction = 0
-#         if angular_momentum > 0:
-#             orbit_direction = 1
-#         else:
-#             orbit_direction = -1
+        ax.plot(*target_xyz.T, color="tab:blue", label="Target")
+        ax.plot(*chaser_xyz.T, color="tab:orange", label="Chaser")
+        for name, xyz, color in (("Target", target_xyz, "tab:blue"),
+                                 ("Chaser", chaser_xyz, "tab:orange")):
+            ax.scatter(*xyz[0], color=color, marker="o", label=f"{name} initial")
+            ax.scatter(*xyz[-1], color=color, marker="s", label=f"{name} final")
+        ax.scatter(*burn_xyz.T, color="red", marker="x", label="Burns")
+        for number, xyz in enumerate(burn_xyz, 1):
+            ax.text(*xyz, f" Burn {number}", color="red")
 
-#         burn_direction = 0
-#         if phase_error > 0:
-#             burn_direction = -1 * orbit_direction
-#         else:
-#             burn_direction = 1 * orbit_direction
+        if reference_index == 0:
+            # Show the complete four-body context, even when spacecraft
+            # separation is too small to resolve at the Jupiter/AU scale.
+            body_states = body_solution.sol(chaser_times).reshape(len(system.BODY_NAMES), 6, -1)
+            surface_bounds = []
+            for index, (name, color) in enumerate(zip(system.BODY_NAMES, system.COLORS)):
+                xyz = (body_states[index, :3] - body_states[0, :3]) / scale
+                radius = system.BODY_RADII[index] / scale
+                system.plot_body_surface(ax, xyz[:, -1], radius, color)
+                surface_bounds.extend((xyz[:, -1] - radius, xyz[:, -1] + radius))
+                ax.plot(*xyz, color=color, label=name)
+                ax.scatter(*xyz[:, 0], color=color, marker="o")
+                ax.scatter(*xyz[:, -1], color=color, marker="s")
+            points = np.concatenate((chaser_xyz, target_xyz, surface_bounds,
+                                     ((body_states[:, :3] - body_states[0, :3]) / scale)
+                                     .transpose(0, 2, 1).reshape(-1, 3)))
+        else:
+            # Earth's surface is centered on the current Earth, not the
+            # fixed integration origin. Omit distant bodies for readability.
+            radius_km = system.BODY_RADII[1] / scale
+            system.plot_body_surface(ax, np.zeros(3), radius_km, "steelblue", alpha=0.2)
+            ax.scatter(0, 0, 0, color="steelblue", label="Earth")
+            points = np.concatenate((chaser_xyz, target_xyz,
+                                     [[-radius_km] * 3, [radius_km] * 3]))
 
-# Old Main Function        
-# speeds = [(mu/starting_distance_x)**0.5]
-# t_start = 0
-# t_end = 20 * 60 * 60
-# t_burn = 2 * 60 * 60
-# t_marker = 2 * 60 * 60
-# t_eval_burn = np.linspace(t_start, t_burn, 5000)
-# t_eval_end = np.linspace(t_burn, t_end, 5000)
-# t_eval = np.linspace(t_start, t_end, 5000)
-# t_span = (t_start, t_end)
-# # burn = [50, 100]
+        system.set_equal_3d_limits(ax, points)
+        ax.set(xlabel=f"x ({unit})", ylabel=f"y ({unit})", zlabel=f"z ({unit})", title=title)
+        ax.legend(fontsize="small")
+    fig.suptitle("Best rendezvous — true-scale body surfaces; spacecraft and event markers not to scale")
+    fig.tight_layout()
+    return fig
 
-# target_state0 = [starting_distance_x, starting_distance_y, 0, speeds[0]]
-# chaser_state0 = [starting_distance_x, -500_000, 500, speeds[0]]
 
-# target_sol = solve_ivp(two_body_ode, t_span, target_state0, t_eval=t_eval, dense_output=True, method='DOP853', rtol=1e-6)
-# chaser_sol = solve_ivp(two_body_ode, (t_start, t_burn), chaser_state0, t_eval=t_eval_burn, dense_output=True, method='DOP853', rtol=1e-6)
-
-# target_marker_state = target_sol.sol(t_burn)
-# chaser_before_burn_state = chaser_sol.y[:, -1]
-
-# burn = burn_size(chaser_before_burn_state[2:4], 1000)
-
-# chaser_after_burn_state = apply_burn(chaser_before_burn_state, burn)
-
-# chaser_sol2 = solve_ivp(two_body_ode, (t_burn, t_end), chaser_after_burn_state, t_eval=t_eval_end, dense_output=True, method='DOP853', rtol=1e-6)
-
-# target_before = target_sol.sol(t_eval_burn)
-# target_after = target_sol.sol(t_eval_end)
-
-# dx_before = chaser_sol.y[0] - target_before[0]
-# dy_before = chaser_sol.y[1] - target_before[1]
-# distance_before = np.sqrt(dx_before**2 + dy_before**2)
-
-# dx_after = chaser_sol2.y[0] - target_after[0]
-# dy_after = chaser_sol2.y[1] - target_after[1]
-# distance_after = np.sqrt(dx_after**2 + dy_after**2)
-# distance_all = np.concatenate((distance_before, distance_after))
-# min_index = np.argmin(distance_all)
-
-def main():
+def main(weights):
     def read_state(spacecraft_name):
         while True:
             raw_state = input(
-                f"Enter the {spacecraft_name} initial state x y vx vy in SI units: "
+                f"Enter the {spacecraft_name} initial state x y z vx vy vz in SI units: "
             )
             try:
                 state = [float(value) for value in raw_state.replace(",", " ").split()]
             except ValueError:
-                print("Enter four numeric values separated by spaces or commas.")
+                print("Enter six numeric values separated by spaces or commas.")
                 continue
 
-            if len(state) == 4:
+            if len(state) == 6 and np.all(np.isfinite(state)):
                 return state
-            print("The state must contain exactly four values: x y vx vy.")
+            print("The state must contain exactly six finite values: x y z vx vy vz.")
 
     print("Positions are Earth-centered in metres; velocities are in metres per second.")
+    print("Axes must align with the J2000 ecliptic axes (not Earth-rotating axes).")
     chaser_state = read_state("chaser")
     target_state = read_state("target")
 
@@ -292,34 +299,29 @@ def main():
     while True:
         try:
             final_time = float(input("Enter the mission duration in seconds: "))
-            if final_time > 120:
+            if np.isfinite(final_time) and final_time > 120:
                 break
         except ValueError:
             pass
         print("Mission duration must be greater than 120 seconds.")
 
-    # while True:
-    #     try:
-    #         n = float(input("Enter number of periods as an integer: "))
-    #         if n > 0:
-    #             break
-    #     except ValueError:
-    #         pass
-    #     print("The number of periods must be a positive integer.")
-
-    # period = synodic_period(chaser_state, target_state)
-    # final_time = period * n
     print(f"Final Time: {final_time:.2f}")
-    # print(f"Synodic Period: {period:.2f}")
 
     t_span = (0, final_time)
-    weights = (1 / 100_000**2, 1 / 100**2, 1 / 1000)
+
+    initial_states = system.get_initial_states()
+    chaser_state = (np.asarray(chaser_state) + initial_states[1])
+    target_state = (np.asarray(target_state) + initial_states[1])
+
+    body_solution = system.simulate_system(initial_states, final_time)
+
     best_parameters, optimizer_score = rendezvous(
         chaser_state,
         target_state,
         num_burns,
         weights,
-        t_span
+        t_span,
+        body_solution,
     )
     best_burns = np.asarray(best_parameters).reshape(num_burns, 2)
     history, trajectory_score, _ = trajectory(
@@ -327,14 +329,13 @@ def main():
         target_state,
         t_span,
         best_burns,
-        weights
+        weights,
+        body_solution,
     )
 
     chaser_times, chaser_states, target_sol, burn_times, burn_states = history
     target_at_chaser_times = target_sol.sol(chaser_times)
-    separation = np.linalg.norm(chaser_states[:, :2] - target_at_chaser_times[:2].T, axis=1)
-    target_at_burns = target_sol.sol(burn_times)
-    burn_separations = np.linalg.norm(burn_states[:, :2] - target_at_burns[:2].T, axis=1)
+    separation = np.linalg.norm(chaser_states[:, :3] - target_at_chaser_times[:3].T, axis=1)
 
     print(f"Optimizer score: {optimizer_score:.6f}")
     print(f"Trajectory score: {trajectory_score:.6f}")
@@ -342,43 +343,27 @@ def main():
     for burn_number, (delta_v, burn_time) in enumerate(best_burns, 1):
         print(f"  Burn {burn_number}: delta-v={delta_v:.3f}, time={burn_time:.3f}")
     print(f"Final separation: {separation[-1]:.3f} m")
+    minimum_index = np.argmin(separation)
+    print(f"Minimum sampled separation: {separation[minimum_index]:.3f} m "
+          f"at {chaser_times[minimum_index]:.3f} s")
 
-    plt.figure(figsize=(9, 5))
-    plt.plot(chaser_times / 3600, separation / 1000, label="Chaser-target distance")
-    plt.scatter(burn_times / 3600, burn_separations / 1000, color="red", zorder=3, label="Burns")
-    for burn_number, (burn_time, burn_distance) in enumerate(zip(burn_times, burn_separations), 1):
-        plt.axvline(burn_time / 3600, color="red", linestyle="--", linewidth=0.8, alpha=0.5)
-        plt.annotate(f"Burn {burn_number}", (burn_time / 3600, burn_distance / 1000), xytext=(5, 7), textcoords="offset points")
-    plt.xlabel("Time (hours)")
-    plt.ylabel("Distance (km)")
-    plt.title("Best Rendezvous: Separation Over Time")
-    plt.grid(True)
-    plt.legend()
-    plt.tight_layout()
-
-    plt.figure(figsize=(8, 8))
-    plt.plot(target_sol.y[0] / 1000, target_sol.y[1] / 1000, label="Target")
-    plt.plot(chaser_states[:, 0] / 1000, chaser_states[:, 1] / 1000, label="Chaser")
-    plt.scatter(burn_states[:, 0] / 1000, burn_states[:, 1] / 1000, color="red", zorder=3, label="Burns")
-    plt.scatter(target_sol.y[0, -1] / 1000, target_sol.y[1, -1] / 1000, color="tab:blue", marker="s", s=70, zorder=4, label="Target at end time")
-    plt.scatter(chaser_states[-1, 0] / 1000, chaser_states[-1, 1] / 1000, color="tab:orange", marker="s", s=70, zorder=4, label="Chaser at end time")
-    for burn_number, burn_state in enumerate(burn_states, 1):
-        plt.annotate(f"Burn {burn_number}", (burn_state[0] / 1000, burn_state[1] / 1000), xytext=(6, 6), textcoords="offset points")
-    plt.fill(earth_radius * np.cos(theta) / 1000, earth_radius * np.sin(theta) / 1000, color="steelblue", alpha=0.35, label="Earth")
-    plt.axis("equal")
-    plt.xlabel("x position (km)")
-    plt.ylabel("y position (km)")
-    plt.title("Best Rendezvous Trajectory")
-    plt.grid(True)
-    plt.legend(loc="upper right")
-    plt.tight_layout()
+    system.plot_system(body_solution, system.DEFAULT_EPOCH)
+    plot_rendezvous(history, body_solution)
     plt.show()
 
     return best_burns, optimizer_score, history
 
 
 if __name__ == "__main__":
-    main()
+    import argparse
+
+    parser = argparse.ArgumentParser(description="Run a rendezvous with position, velocity and delta-v weights.")
+    parser.add_argument("weights", nargs=3, type=float, metavar="WEIGHT",
+                        help="Three positive weights: position velocity delta-v")
+    arguments = parser.parse_args()
+    if not all(np.isfinite(value) and value > 0 for value in arguments.weights):
+        parser.error("Weights must be positive and finite.")
+    main(tuple(arguments.weights))
 
     
     
