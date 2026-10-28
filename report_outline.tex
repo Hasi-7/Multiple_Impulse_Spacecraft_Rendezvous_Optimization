@@ -70,7 +70,7 @@ To begin, the following assumptions will be used for the 2 dimensional model
   \item An uncontrolled target and a chaser with instantaneous burns.
   \item Fuel usage is directly proportional to change in velocity of a burn.
 \end{itemize}
-For each spacecraft, position is defined as $\mathbf r=\begin{bmatrix} x \\ y \end{bmatrix}$ and velocity is defined as $\mathbf v=(v_x,v_y)$:
+For each spacecraft, position is defined as $\mathbf r=\begin{bmatrix} x \\ y \end{bmatrix}$ and velocity is defined as $\mathbf v=\begin{bmatrix} v_x \\ v_y \end{bmatrix}$:
 \begin{equation}
   \dot{\mathbf r}=\mathbf v,
   \qquad \dot{\mathbf v}=-\mu\frac{\mathbf r}{\|\mathbf r\|^3}.
@@ -90,9 +90,42 @@ At burn time $t_i$, position is continuous and velocity changes according to
 Equation~\eqref{eq:instantaneous_burns} is the mathematical representation of the assumption that all burns are applied as instantaneous burns, meaning that position does
 not change but the velocity changes instantly right after time $t_i$. 
 
-For the 3 dimensional model, the assumptions change slightly. The first assumption changes from 
+For the three-dimensional model, the assumptions are extended as follows:
+\begin{itemize}
+  \item Three-dimensional motion in an inertial Cartesian frame initially
+        coincident with the Sun's position and velocity. The Sun is allowed
+        to move during propagation.
+  \item Newtonian point-mass gravity from the Sun, Earth, Moon, and Jupiter,
+        each with a constant gravitational parameter $\mu_b$.
+        The bodies move under their mutual gravitational attraction.
+        Spacecraft masses are negligible, and other gravitational bodies
+        and non-gravitational forces are neglected.
+  \item An uncontrolled target and a chaser with instantaneous burns.
+        Position remains continuous across each burn, while velocity
+        changes instantaneously.
+  \item Total impulse magnitude,
+        $\sum_i \|\Delta\mathbf v_i\|$,
+        is used as a proxy for propellant consumption and is part of the third term for Equation~\ref{eq:cost_function}, the cost function.
+\end{itemize}
 \subsection{Scenario and definition of success}
-We can begin with defining the initial state of a spacecraft using the position and vel
+We can begin with defining the initial state of a spacecraft using the position and velocity vectors in 2 dimensions as follows:
+\begin{equation}
+  \mathbf \vec{v}=\begin{bmatrix} x \\ y \\ v_x \\ v_y \end{bmatrix}
+  \label{eq:initial_2D_state}
+\end{equation}
+Then applying ODE in Equation~\ref{eq:ODE} to the derivative of the initial state, we obtain:
+\begin{align*}
+\begin{equation}
+  \mathbf \vec{v'}&=\begin{bmatrix} v_x \\ v_y \\ a_x \\ a_y \end{bmatrix}
+  \label{eq:initial_2D_state_derivative}
+\end{equation}
+\begin{equation}
+  \mathbf \vec{v'}&=\begin{bmatrix} v_x \\ v_y \\ -\mu\frac{x}{\abs{r}^3} \\ -\mu\frac{y}{\abs{r}^3} \end{bmatrix}
+  \label{eq:initial_2D_state_derivative_ODE}
+\end{equation}
+\end{align*}
+
+
 \prompt{Specify both initial states, units, final time $T$, number of burns,
 and allowed burn magnitudes and times. Define acceptable final separation
 and relative speed before interpreting a result as successful rendezvous.}
