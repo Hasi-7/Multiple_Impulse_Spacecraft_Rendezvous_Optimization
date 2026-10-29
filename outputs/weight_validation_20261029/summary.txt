@@ -1,7 +1,7 @@
 WEIGHT SWEEP: INITIAL-STATE GENERALIZATION TEST
 ============================================================
 Run directory: outputs\weight_validation_20261029
-Complete: False
+Complete: True
 Source sweep: outputs\weight_sweep_20261027_200627_547397
 Source trials: 1252; statuses: {'ok': 552, 'error': 700}
 
@@ -245,21 +245,71 @@ mixed_100km
     vs coast: final separation change=-84665.346266 m; speed change=-147.627082 m/s (negative means improvement)
 
 higher_orbit_8000km
+  COAST: final=88090.798772 m; speed=67.723348 m/s; min=10204.389664 m; min altitude=1602625.210 m; status=ok
+  best_overall: ok; strict rendezvous=False
+    final=5214.710329 m; speed=7.275183 m/s; delta-v=32.236045 m/s; score=8012.212969
+    minimum separation=5214.710329 m at 3600.000000 s; minimum surface altitude=1621918.226 m
+    burns [signed delta-v m/s, time s]: [[17.55887365672872, 60.8178406712645], [-14.677171525957322, 1494.5041704582136]]
+    elapsed=1516.958 s
+    vs coast: final separation change=-82876.088442 m; speed change=-60.448166 m/s (negative means improvement)
+  best_coarse: ok; strict rendezvous=False
+    final=22282.476409 m; speed=9.929412 m/s; delta-v=9.083704 m/s; score=59510.216442
+    minimum separation=8637.768849 m at 698.623351 s; minimum surface altitude=1619399.128 m
+    burns [signed delta-v m/s, time s]: [[9.078185788380203, 61.86854466305585], [-0.005518346684019065, 1494.5668578365007]]
+    elapsed=29.877 s
+    vs coast: final separation change=-65808.322363 m; speed change=-57.793936 m/s (negative means improvement)
+  best_position: ok; strict rendezvous=False
+    final=4249.148113 m; speed=8.367836 m/s; delta-v=32.427710 m/s; score=8807.659517
+    minimum separation=4249.148113 m at 3600.000000 s; minimum surface altitude=1621808.021 m
+    burns [signed delta-v m/s, time s]: [[16.742854835998454, 60.64335034120278], [-15.684855293600773, 1653.3754900883443]]
+    elapsed=48.419 s
+    vs coast: final separation change=-83841.650659 m; speed change=-59.355512 m/s (negative means improvement)
+  best_velocity: ok; strict rendezvous=False
+    final=23533.180916 m; speed=9.708336 m/s; delta-v=8.735312 m/s; score=64806.255803
+    minimum separation=8744.887487 m at 721.073428 s; minimum surface altitude=1619009.951 m
+    burns [signed delta-v m/s, time s]: [[8.719054181680042, 67.47830292223145], [0.016257910597011843, 897.1371724874027]]
+    elapsed=43.805 s
+    vs coast: final separation change=-64557.617856 m; speed change=-58.015013 m/s (negative means improvement)
 
 inclined_target_20deg
+  COAST: final=75387.381004 m; speed=68.470382 m/s; min=10204.386832 m; min altitude=610145.676 m; status=ok
+  best_overall: ok; strict rendezvous=False
+    final=34521.097609 m; speed=11.230883 m/s; delta-v=87.904754 m/s; score=131784.066569
+    minimum separation=10198.039027 m at 0.000000 s; minimum surface altitude=610146.401 m
+    burns [signed delta-v m/s, time s]: [[52.952927380154556, 2492.4572260117325], [-34.951826385927255, 3539.6088061791206]]
+    elapsed=34.509 s
+    vs coast: final separation change=-40866.283394 m; speed change=-57.239499 m/s (negative means improvement)
+  best_coarse: ok; strict rendezvous=False
+    final=17481.163569 m; speed=13.464837 m/s; delta-v=6.590236 m/s; score=48689.304727
+    minimum separation=9120.674206 m at 680.943656 s; minimum surface altitude=619870.917 m
+    burns [signed delta-v m/s, time s]: [[6.588322594323404, 61.088073364944194], [0.0019132494017970458, 3444.889862022231]]
+    elapsed=346.999 s
+    vs coast: final separation change=-57906.217435 m; speed change=-55.005545 m/s (negative means improvement)
+  best_position: ok; strict rendezvous=False
+    final=3795.742348 m; speed=6.901103 m/s; delta-v=24.519433 m/s; score=6203.337157
+    minimum separation=3795.742348 m at 3600.000000 s; minimum surface altitude=622353.521 m
+    burns [signed delta-v m/s, time s]: [[12.535620636350998, 61.53739491491043], [-11.983812370531155, 1549.0434157950888]]
+    elapsed=70.660 s
+    vs coast: final separation change=-71591.638656 m; speed change=-61.569279 m/s (negative means improvement)
+  best_velocity: ok; strict rendezvous=False
+    final=17652.268255 m; speed=8.959240 m/s; delta-v=12.659978 m/s; score=39187.081380
+    minimum separation=9118.280279 m at 680.388066 s; minimum surface altitude=619874.106 m
+    burns [signed delta-v m/s, time s]: [[6.590540845456072, 60.47009934525909], [-6.069437089626206, 3539.6726190811214]]
+    elapsed=57.594 s
+    vs coast: final separation change=-57735.112748 m; speed change=-59.511142 m/s (negative means improvement)
 
 SUMMARY (NEW STATES ONLY; ORIGINAL CONTROL EXCLUDED)
-best_overall: 6 tried; 6 surface-safe; 0 strict; 1 loose; 5 improved BOTH final metrics vs coast.
+best_overall: 8 tried; 8 surface-safe; 0 strict; 1 loose; 7 improved BOTH final metrics vs coast.
   Final separation range: 255.435972 to 80196.808433 m; speed range: 0.218482 to 26.177346 m/s.
-best_coarse: 6 tried; 6 surface-safe; 0 strict; 1 loose; 4 improved BOTH final metrics vs coast.
+best_coarse: 8 tried; 8 surface-safe; 0 strict; 1 loose; 6 improved BOTH final metrics vs coast.
   Final separation range: 254.987492 to 59416.971158 m; speed range: 0.241460 to 41.939430 m/s.
-best_position: 6 tried; 6 surface-safe; 0 strict; 1 loose; 4 improved BOTH final metrics vs coast.
+best_position: 8 tried; 8 surface-safe; 0 strict; 1 loose; 6 improved BOTH final metrics vs coast.
   Final separation range: 254.987228 to 73090.278792 m; speed range: 0.241486 to 65.217985 m/s.
-best_velocity: 6 tried; 6 surface-safe; 0 strict; 1 loose; 4 improved BOTH final metrics vs coast.
-  Final separation range: 254.985030 to 135334.014758 m; speed range: 0.241486 to 5.270317 m/s.
+best_velocity: 8 tried; 8 surface-safe; 0 strict; 1 loose; 6 improved BOTH final metrics vs coast.
+  Final separation range: 254.985030 to 135334.014758 m; speed range: 0.241486 to 9.708336 m/s.
 
 INTERPRETATION
-0/24 new-state weight/state pairs met strict rendezvous criteria.
+0/32 new-state weight/state pairs met strict rendezvous criteria.
 Finite, non-colliding output does not by itself mean a good rendezvous.
 Near-start cases may already be close: use coast comparison rather than final distance alone.
 

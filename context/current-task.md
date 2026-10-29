@@ -5,6 +5,7 @@ Validate the completed weight sweep's returned weights on different initial
 spacecraft states and write a separate plain-text report of all experiments.
 
 ## Relevant Files
+- Handoff and continuation instructions: `context/weight-sweep-handoff.md`.
 - `weight_sweep.py`, `Multiple_Gravitational_Objects.py`
 - `outputs/weight_sweep_20261027_200627_547397/{configuration.json,results.csv,summary.json}`
 - New reproducible runner: `validate_sweep_weights.py`.
@@ -27,3 +28,10 @@ spacecraft states and write a separate plain-text report of all experiments.
 - Existing tests, then full production optimizer trials (no shortened optimizer).
 
 ## Open Questions
+- Validation completed: 36/36 powered trials, nine coast controls, `Complete: True`.
+  See completion update in `context/weight-sweep-handoff.md`. Four new-state
+  project-criterion passes, all in the 100 m case that also passes when coasting;
+  zero strict passes. No rerun needed.
+- The user's report now defines success as <=1 km and <=1 m/s, matching the
+  validation report's existing "loose" criterion. Reconcile wording after the
+  runner finishes; do not confuse zero strict passes with zero project passes.

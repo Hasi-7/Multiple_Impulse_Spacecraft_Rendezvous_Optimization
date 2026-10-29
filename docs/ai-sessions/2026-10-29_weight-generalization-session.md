@@ -33,3 +33,12 @@ separate `.txt` summary of everything tried and its results.
 Launched as a background process. Final production status and measurements must
 be read from `outputs/weight_validation_20261029/summary.txt`; launch alone does
 not imply completion.
+
+## Completion update
+The production command completed successfully: verified 36 powered trials,
+nine coast controls and `Complete: True`. All powered trials passed the sampled
+surface screen. Of 32 new-state trials, four meet the user's report criterion
+(<=1 km and <=1 m/s), all in the 100 m initial-offset case; coast already meets
+that criterion there. No trials meet the stricter 100 m / 0.1 m/s diagnostic.
+The finalized raw outputs and summary are local changes after commit `1f8a10d`;
+they have not been pushed again. See `context/weight-sweep-handoff.md`.
