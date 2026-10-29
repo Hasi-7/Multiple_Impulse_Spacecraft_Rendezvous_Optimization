@@ -82,7 +82,7 @@ def score(burns, chaser_state, t_sol, t_span, weights):
         or np.any(burn_times > t_span[1])
         or np.any(np.diff(burn_times) <= 0)
     ):
-        return 1e12
+        return np.inf
 
 
     previous_time = t_span[0]

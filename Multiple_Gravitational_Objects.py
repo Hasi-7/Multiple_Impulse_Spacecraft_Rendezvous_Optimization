@@ -4,6 +4,8 @@ import numpy as np
 import matplotlib.pyplot as plt
 import celestial_body_simulator as system
 
+MAX_BURN_DELTA_V = 1000.0  # Absolute magnitude of each signed burn, in m/s.
+
 # System is defined with Sun at the origin, Earth, Moon and Jupiter as the significantly relevant gravitational bodies
     
 def n_body_ode(t, state, body_solution):
@@ -36,6 +38,16 @@ def n_body_ode(t, state, body_solution):
 def burn_size(v, delta):
     unit_v = v/np.linalg.norm(v)
     return delta * unit_v
+
+def earth_relative_burn(state, delta, time, body_solution):
+    """Resolve a signed burn along the spacecraft's Earth-relative velocity."""
+    if delta == 0:
+        return np.zeros(3)
+    earth_index = system.BODY_NAMES.index("Earth")
+    velocity_start = 6 * earth_index + 3
+    earth_velocity = body_solution.sol(time)[velocity_start:velocity_start + 3]
+    relative_velocity = np.asarray(state[3:6]) - earth_velocity
+    return burn_size(relative_velocity, delta)
 
 def apply_burn(state, delta_v):
     # state = [x, y, z, vx, vy, vz]
@@ -75,7 +87,7 @@ def score(burns, chaser_state, t_sol, t_span, weights, body_solution):
         or np.any(burn_times > t_span[1])
         or np.any(np.diff(burn_times) <= 0)
     ):
-        return 1e12
+        return np.inf
 
 
     previous_time = t_span[0]
@@ -84,7 +96,7 @@ def score(burns, chaser_state, t_sol, t_span, weights, body_solution):
         c_sol = solve_ivp(n_body_ode, (previous_time, time), chaser_state, args=(body_solution,), method='DOP853', rtol=1e-6)
         
         c_before_burn_state = c_sol.y[:, -1]
-        burn = burn_size(c_before_burn_state[3:6], dv)
+        burn = earth_relative_burn(c_before_burn_state, dv, time, body_solution)
         chaser_state = apply_burn(c_before_burn_state, burn)
 
         previous_time = time
@@ -142,7 +154,7 @@ def trajectory(c_state, t_state, t_span, burns, weights, body_solution, samples_
         burn_states.append(state_before_burn.copy())
         current_state = apply_burn(
             state_before_burn,
-            burn_size(state_before_burn[3:6], dv)
+            earth_relative_burn(state_before_burn, dv, burn_time, body_solution)
         )
         previous_time = burn_time
 
@@ -171,7 +183,7 @@ def trajectory(c_state, t_state, t_span, burns, weights, body_solution, samples_
     ), cost(error(chaser_states[len(chaser_states)-1], t_final_state), weights, burns), target_loc_burn_n
 
 def rendezvous(c_state0, t_state0, num_burns, weights, t_span, body_solution):
-    bounds = [(-500, 500), (t_span[0] + 60, t_span[1] - 60)] * num_burns
+    bounds = [(-MAX_BURN_DELTA_V, MAX_BURN_DELTA_V), (t_span[0] + 60, t_span[1] - 60)] * num_burns
     t_eval = np.linspace(t_span[0], t_span[1], 5000)
     t_sol = solve_ivp(n_body_ode, t_span, t_state0, args=(body_solution,), t_eval=t_eval, dense_output=True, method='DOP853', rtol=1e-6)
     result = differential_evolution(

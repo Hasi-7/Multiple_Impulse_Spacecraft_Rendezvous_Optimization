@@ -1,0 +1,54 @@
+﻿**********************
+Windows PowerShell transcript start
+Start time: 20261029140808
+Username: MainDesktop2\Hasnain
+RunAs User: MainDesktop2\Hasnain
+Configuration Name: 
+Machine: MAINDESKTOP2 (Microsoft Windows NT 10.0.26200.0)
+Host Application: C:\WINDOWS\System32\WindowsPowerShell\v1.0\powershell.exe -NoLogo -NoProfile -NoExit -ExecutionPolicy Bypass -File D:\Hasnain\Personal\dev\Simplified_Multiple_Impulse_Spacecraft_Rendezvous_Optimization\context\run-corrected-experiments.ps1 -RunTag 20261029_140808
+Process ID: 32716
+PSVersion: 5.1.26100.9711
+PSEdition: Desktop
+PSCompatibleVersions: 1.0, 2.0, 3.0, 4.0, 5.0, 5.1.26100.9711
+BuildVersion: 10.0.26100.9711
+CLRVersion: 4.0.30319.42000
+WSManStackVersion: 3.0
+PSRemotingProtocolVersion: 2.3
+SerializationVersion: 1.1.0.1
+**********************
+Transcript started, output file is outputs/corrected_experiments_20261029_140808.log
+STAGE 1: Complete unit tests
+k
+test_coarse_grid_and_quarter_steps (test_weight_sweep.WeightSweepTests.test_coarse_grid_and_quarter_steps) ... ok
+test_coarse_then_refinement_and_deduplication (test_weight_sweep.WeightSweepTests.test_coarse_then_refinement_and_dedupl
+ication) ... ok
+test_dry_run_makes_no_network_or_optimizer_calls (test_weight_sweep.WeightSweepTests.test_dry_run_makes_no_network_or_op
+timizer_calls) ... ok
+test_failed_trial_is_saved_and_limit_prevents_refinement (test_weight_sweep.WeightSweepTests.test_failed_trial_is_saved_
+and_limit_prevents_refinement) ... ok
+test_fixed_comparison_and_invalid_trials (test_weight_sweep.WeightSweepTests.test_fixed_comparison_and_invalid_trials) .
+.. ok
+test_interrupt_preserves_completed_trials (test_weight_sweep.WeightSweepTests.test_interrupt_preserves_completed_trials)
+ ... ok
+test_new_sweep_reuses_saved_ephemeris_without_fetch (test_weight_sweep.WeightSweepTests.test_new_sweep_reuses_saved_ephe
+meris_without_fetch) ... ok
+test_resume_appends_next_trial_without_refetching_or_changing_configuration (test_weight_sweep.WeightSweepTests.test_res
+ume_appends_next_trial_without_refetching_or_changing_configuration) ... ok
+test_resume_refinement_keeps_original_coarse_centre (test_weight_sweep.WeightSweepTests.test_resume_refinement_keeps_ori
+ginal_coarse_centre) ... ok
+test_resume_rejects_a_different_model_before_running_trials (test_weight_sweep.WeightSweepTests.test_resume_rejects_a_di
+fferent_model_before_running_trials) ... ok
+test_resume_rejects_truncated_csv_without_modifying_it (test_weight_sweep.WeightSweepTests.test_resume_rejects_truncated
+_csv_without_modifying_it) ... ok
+
+----------------------------------------------------------------------
+Ran 27 tests in 1.486s
+
+OK
+STAGE 2: Full corrected-model weight sweep -> outputs/weight_sweep_earth_relative_20261029_140808
+
+Weight sweep failed.
+**********************
+Windows PowerShell transcript end
+End time: 20261029141951
+**********************

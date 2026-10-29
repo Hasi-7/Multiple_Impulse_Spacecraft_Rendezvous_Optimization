@@ -7,7 +7,7 @@
 \usepackage[hidelinks]{hyperref}
 \setlist[itemize]{nosep,topsep=4pt}
 
-\title{Multiple-Impulse Spacecraft Rendezvous Optimization}\\
+\title{Multiple-Impulse Spacecraft Rendezvous Optimization}
 \author{Hasnain}
 \date{\today}
 
@@ -15,6 +15,7 @@
 % Include only experiments and checks actually performed.
 % This outline is a suggested structure, not an assessment rubric.
 \newcommand{\prompt}[1]{\par\noindent\textit{Writing prompt:} #1\par}
+\newcommand{\abs}[1]{\left\lvert#1\right\rvert}
 
 \begin{document}
 \maketitle
@@ -33,8 +34,10 @@ with the same velocity while minimizing the amount of fuel usage. For this speci
 is defined as the \textit{chaser} spacecraft and the other is the \textit{target} spacecraft. % Requires a citation for the project outline provided by Mingde intext here
 
 \subsection{Project Aim and Research Question} % This section as a whole should be cited with Mingde's project outline as he is the one who defined these things for me
-This leads us to the question that I aim to work around:\\
-\center{How can a spacecraft use a small number of engine burns to rendezvous with another spacecraft orbiting Earth?}\\ % This needs a citation for the project outline provided by Mingde
+This leads us to the question that I aim to work around:
+\begin{center}
+How can a spacecraft use a small number of engine burns to rendezvous with another spacecraft orbiting Earth?
+\end{center} % This needs a citation for the project outline provided by Mingde
 Thus, the aim of this project that follows is to develop a simulator for orbital rendezvous missions. I will begin with a simplified model in 2 dimenions
 and only considering the Earth as the only relevant gravitational body. I will look to minimize the following 2 errors:
 
@@ -54,7 +57,7 @@ In addition to position and velocity error, I will be taking into account fuel u
 in the $x$, $y$, and $z$ directions. These three will be combined into the following cost function:
 
 \begin{equation}
-J = \omega_{r}J_{r} + \omega_{v}J_{v} + \omega_{\delta$v$}\sum_{i} \abs(\delta$v_i$)
+J = \omega_{r}J_{r} + \omega_{v}J_{v} + \omega_{\Delta v}\sum_{i} \abs{\Delta v_i}
 \label{eq:cost_function}
 \end{equation}
 
@@ -79,7 +82,7 @@ For each spacecraft, position is defined as $\mathbf r=\begin{bmatrix} x \\ y \e
 Equation~\eqref{eq:ODE} defines the ODE that the spacecraft states will be modelled after, with $\mu$ defined as the gravitational parameter and for the 2 dimensional model
 is the gravitational parameter of Earth:
 \begin{align*}
-  \mu&=GM
+  \mu&=GM\\
   \mu&=3.986\times10^{14}
 \end{align*}
 At burn time $t_i$, position is continuous and velocity changes according to
@@ -92,12 +95,14 @@ not change but the velocity changes instantly right after time $t_i$.
 
 For the three-dimensional model, the assumptions are extended as follows:
 \begin{itemize}
-  \item Three-dimensional motion in an inertial Cartesian frame initially
-        coincident with the Sun's position and velocity. The Sun is allowed
-        to move during propagation.
+  \item Three-dimensional motion in a Sun-centred Cartesian frame, treated
+        as inertial under the approximation that the Sun is physically
+        fixed at the origin with zero velocity.
   \item Newtonian point-mass gravity from the Sun, Earth, Moon, and Jupiter,
         each with a constant gravitational parameter $\mu_b$.
-        The bodies move under their mutual gravitational attraction.
+        Earth, the Moon and Jupiter move under the gravity of all four bodies.
+        The Sun attracts the moving bodies but does not respond to their
+        gravitational attraction.
         Spacecraft masses are negligible, and other gravitational bodies
         and non-gravitational forces are neglected.
   \item An uncontrolled target and a chaser with instantaneous burns.
@@ -110,32 +115,28 @@ For the three-dimensional model, the assumptions are extended as follows:
 \subsection{Scenario and definition of success}
 We can begin with defining the initial state of a spacecraft using the position and velocity vectors in 2 dimensions as follows:
 \begin{equation}
-  \mathbf \vec{v}=\begin{bmatrix} x \\ y \\ v_x \\ v_y \end{bmatrix}
+  \mathbf{\vec{v}}=\begin{bmatrix} x \\ y \\ v_x \\ v_y \end{bmatrix}
   \label{eq:initial_2D_state}
 \end{equation}
 Then applying ODE in Equation~\ref{eq:ODE} to the derivative of the initial state, we obtain:
-\begin{align*}
 \begin{equation}
-  \mathbf \vec{v'}&=\begin{bmatrix} v_x \\ v_y \\ a_x \\ a_y \end{bmatrix}
+  \mathbf{\vec{v'}}=\begin{bmatrix} v_x \\ v_y \\ a_x \\ a_y \end{bmatrix}
   \label{eq:initial_2D_state_derivative}
 \end{equation}
 \begin{equation}
-  \mathbf \vec{v'}&=\begin{bmatrix} v_x \\ v_y \\ -\mu\frac{x}{\abs{r}^3} \\ -\mu\frac{y}{\abs{r}^3} \end{bmatrix}
+  \mathbf{\vec{v'}}=\begin{bmatrix} v_x \\ v_y \\ -\mu\frac{x}{\abs{r}^3} \\ -\mu\frac{y}{\abs{r}^3} \end{bmatrix}
   \label{eq:initial_2D_state_derivative_ODE}
 \end{equation}
-\end{align*}
 Then with any final time $T$, the number of burns and the initial state of both spacecrafts defined as shown in Equation~\ref{eq:initial_2D_state}
 the rendezvous between the \textit{chaser} and \textit{target} spacecraft can be determined.
 
 For the initial state of the 3 dimensional model with more than one significant gravitational body, we can define the acceleration using the same base ODE
 from Equation~\ref{eq:ODE}, but make the following changes to the original model:
-\begin{align*}
-  \ddot{\mathbf r}&=-\mu\frac{\mathbf r}{\|\mathbf r\|^3}.
-  \begin{equation}
-    \ddot{\mathbf r}&=\sum_{i}{n}-\mu_i\frac{r_i}{\abs{r_i}^3}
+\begin{align}
+  \ddot{\mathbf r}&=-\mu\frac{\mathbf r}{\|\mathbf r\|^3}.\notag\\
+    \ddot{\mathbf r}&=\sum_{i=0}^{n-1}-\mu_i\frac{r_i}{\abs{r_i}^3}
     \label{eq:3D_ODE}
-  \end{equation}
-\end{align*}
+\end{align}
 Here, $n$ is the number of gravitational bodies being considered, and where $\mu_i$ and $r_i$ correspond to the i-th gravitational body on a 0 index.
 For my case, the gravitational bodies will be defined as follows:
 
@@ -162,42 +163,178 @@ Furthermore, we will define a successful rendezvous as follows:
 \end{itemize}
 Final docking and approach are not within the scope of the project so this is sufficient for a successful rendezvous
 
-\prompt{Specify both initial states, units, final time $T$, number of burns,
-and allowed burn magnitudes and times. Define acceptable final separation
-and relative speed before interpreting a result as successful rendezvous.}
-\begin{align}
-  e_r &= \|\mathbf r_c(T)-\mathbf r_t(T)\|,\\
-  e_v &= \|\mathbf v_c(T)-\mathbf v_t(T)\|,\\
-  \Delta v_{\mathrm{total}} &= \sum_{i=1}^{N}\|\Delta\mathbf v_i\|.
-\end{align}
-\prompt{Distinguish final separation from the minimum separation during the
-trajectory. Describe total $\Delta v$ as a measure of manoeuvre effort;
-it is not a direct measurement of propellant mass.}
-
 \section{Computational Method}
 \subsection{Trajectory propagation}
-\prompt{Describe the numerical solver, tolerances, target propagation,
-and how chaser propagation stops and restarts at each burn. Explain how
-the states of both spacecraft are compared at the same final time.}
+To begin, I use Python to calculate how the initial states of both spacecrafts
+change over time. The equations of motion are solved using the
+\texttt{solve\_ivp} function from SciPy, with the \texttt{DOP853} method.
+This method adjusts the size of its time steps as the trajectory is
+calculated. For both models, I set the relative tolerance to $10^{-6}$
+and leave the absolute tolerance at its default value of $10^{-6}$.
+These tolerances control the numerical integration error; they do not
+directly define the final separation required for a successful rendezvous.
+
+\subsubsection{Two-dimensional model}
+For the original 2 dimensional model, the initial states are entered in
+the form shown in Equation~\ref{eq:initial_2D_state}, with positions in
+metres and velocities in metres per second relative to the fixed Earth.
+The final time $T$ and number of burns are also specified before the
+search begins. The target is first propagated from $t=0$ to $t=T$ without
+any burns. I keep a continuous interpolated solution of its state using
+\texttt{dense\_output}, allowing its position and velocity to be obtained
+at any time within the simulation. This target solution is reused when
+testing different burn sequences, since the chaser's burns do not affect
+the target's motion.
+
+For the chaser, the trajectory is divided into intervals separated by
+the burn times. The ODE is first solved from the initial time to the
+first burn. At that time, the change in velocity is added to the state
+while position remains unchanged, as described in
+Equation~\ref{eq:instantaneous_burns}. The updated state is then used as
+the initial state for the next interval. This process is repeated for
+each burn, followed by a final propagation to $T$. Thus, both spacecrafts
+are compared at the same final time even though the chaser's motion is
+calculated in separate intervals.
+
+\subsubsection{Three-dimensional model with multiple gravitational bodies}
+For the 3 dimensional model, the initial spacecraft states contain six
+values, $[x,y,z,v_x,v_y,v_z]$. I first obtain the initial states of Earth,
+the Moon and Jupiter from JPL Horizons, using the default starting epoch
+of 27 October 2026 at 12:00:00 UTC. These values are converted
+from kilometres and kilometres per second to SI
+units. The Sun is fixed at the origin with zero velocity throughout
+the simulation.
+
+Earth, the Moon and Jupiter are then propagated under their mutual
+gravitational attraction and the Sun's gravity. I keep the same combined
+state of 24 values, with six values for each body, but set all six
+derivatives of the Sun's state to zero. This calculation is performed once before
+the rendezvous search, using the same solver and tolerances as the
+spacecraft propagation. A continuous interpolated solution is retained
+so that the location of each body can be obtained at the times requested
+by the spacecraft solver. I chose to hold the Sun fixed to simplify the model by
+neglecting its response to the other bodies.
+
+The spacecraft states entered into the simulator describe their initial
+positions and velocities relative to Earth. I add Earth's initial
+position and velocity so that the spacecrafts and gravitational bodies
+can be tracked together with the Sun at the origin. At each time, I
+calculate the distance and direction from each body to the spacecraft
+and add the four gravitational contributions to obtain its acceleration:
+\begin{equation}
+  \mathbf a(t)=-\sum_{b=1}^{4}\mu_b
+  \frac{\mathbf r(t)-\mathbf r_b(t)}
+       {\|\mathbf r(t)-\mathbf r_b(t)\|^3},
+  \label{eq:computed_3D_acceleration}
+\end{equation}
+where $\mathbf r(t)$ and $\mathbf r_b(t)$ are the positions of the
+spacecraft and gravitational body $b$, respectively, measured from
+the Sun. Their difference gives the spacecraft's displacement from that
+body. The target is propagated once for the search, and the chaser is
+propagated between burns in the same way as the 2 dimensional model.
+Both spacecrafts use the same precomputed body trajectories. Their
+masses are neglected, so neither spacecraft changes the motion of the
+four bodies or the other spacecraft.
+
+\subsection{Burn representation}
+In both implementations, a burn is stored as a pair $(d_i,t_i)$, where
+$d_i$ is a signed burn magnitude and $t_i$ is the time of the burn.
+To simplify the search, burns are restricted to act along or opposite
+to the chaser's motion relative to Earth just before the burn. The
+resulting velocity change is added to the chaser's velocity, while its
+position remains unchanged. This is expressed as follows:
+\begin{equation}
+  \Delta\mathbf v_i=d_i
+  \frac{\mathbf v_{c/E}(t_i^-)}{\|\mathbf v_{c/E}(t_i^-)\|}.
+  \label{eq:computed_burn_direction}
+\end{equation}
+A positive value of $d_i$ applies the burn along this velocity, while a
+negative value applies it in the opposite direction. Thus, each burn
+has two search variables rather than separate velocity changes in
+each coordinate direction.
+
+For the 2 dimensional model, Earth is fixed, so
+$\mathbf v_{c/E}=\mathbf v_c$. For the 3 dimensional model, I obtain
+Earth's velocity from the precomputed body solution at each burn time
+and subtract it from the chaser's velocity:
+\begin{equation}
+  \mathbf v_{c/E}(t_i^-)=\mathbf v_c(t_i^-)-\mathbf v_E(t_i).
+\end{equation}
+This gives the direction of the spacecraft's motion relative to Earth
+at the time of the burn. The same calculation is used when scoring candidate sequences
+and when reconstructing the selected trajectory for plotting.
 
 \subsection{Objective function and search}
-The intended weighted objective has the form
+After each candidate burn sequence has been propagated, I calculate
+the squared position and velocity differences at $T$. The total change
+in velocity is calculated by adding the absolute values of the signed
+burn magnitudes:
 \begin{equation}
-  J=w_r e_r^2+w_v e_v^2+w_{\Delta v}\Delta v_{\mathrm{total}}.
+  \Delta v_{\mathrm{total}}=\sum_{i=1}^{N}|d_i|
+  =\sum_{i=1}^{N}\|\Delta\mathbf v_i\|.
 \end{equation}
-\prompt{Check that the implemented objective matches this expression,
-particularly how burn magnitudes are extracted from stored burn/time pairs.
-Report weights and their scaling: squared position error, squared velocity
-error, and total $\Delta v$ have different units. A low weighted cost alone
-does not establish that both rendezvous tolerances were met.}
-\begin{itemize}
-  \item Identify the decision variables and their bounds.
-  \item Explain differential evolution at a practical level.
-  \item State how burn ordering and invalid candidates are handled.
-  \item Record the random seed, search budget, and stopping criteria.
-  \item Include GPU acceleration only if it forms part of the evaluated work;
-        support any speed claim with comparable measured runs.
-\end{itemize}
+These three quantities are combined using the cost function defined in
+Equation~\eqref{eq:cost_function} to score each candidate burn sequence.
+The weights determine how much each term contributes to the search.
+This scaling is necessary because position error, velocity error and
+total change in velocity have different units and numerical sizes.
+For the original 2 dimensional script, the weights are fixed as
+\begin{equation}
+  (\omega_r,\omega_v,\omega_{\Delta v})
+  =(10^{-8},10^{-2},10^{-3}),
+\end{equation}
+when the states and burns are expressed in SI units. In the
+3 dimensional script, the three positive weights are supplied when
+running the program, allowing different choices to be tested.
+
+To search for a burn sequence, I use SciPy's
+\texttt{differential\_evolution} function. This method starts with a
+population of candidate sequences, generates new candidates by
+combining and changing their parameter values, and keeps candidates
+with lower costs. For $N$ burns, there are $2N$ parameters to search.
+The burn magnitude limits are $500\ \mathrm{m\,s^{-1}}$ for the original
+2 dimensional model and $1000\ \mathrm{m\,s^{-1}}$ for the 3 dimensional
+model. Thus, for the 3 dimensional search, the bounds are
+\begin{align}
+  -1000\ \mathrm{m\,s^{-1}} &\leq d_i\leq1000\ \mathrm{m\,s^{-1}},\\
+  60\ \mathrm{s} &\leq t_i\leq T-60\ \mathrm{s}.
+\end{align}
+The burn times must be strictly increasing. A candidate with repeated,
+out-of-order or out-of-interval burn times is assigned a cost of
+$\infty$ before propagation. The 60 second margin applies at the
+beginning and end of the mission; it is not a minimum spacing between
+successive burns. No collision-avoidance constraint is included in
+these scoring functions.
+
+Both scripts use a random seed of 42 and leave the remaining optimizer
+settings at the SciPy defaults. In the installed SciPy version 1.17.1,
+these include the \texttt{best1bin} strategy, a population size of
+$15(2N)=30N$, and a maximum of 1000 generations. The search can stop
+earlier when the spread of population costs meets the default
+convergence tolerance of 0.01, with zero absolute tolerance. A final
+local polishing step is enabled by default. The returned sequence is
+therefore the best sequence found by this search, rather than a
+guaranteed global minimum. The previously defined final separation
+and velocity criteria must still be checked separately; they are not
+enforced as constraints by the optimizer.
+
+\subsection{Trajectory reconstruction and visualization}
+Once a sequence has been selected, I propagate it again to produce the
+trajectory plots. By default, the chaser is sampled at 1000 equally
+spaced output times per interval, and repeated interval endpoints are
+removed when joining the histories. These output times are used for
+plotting and do not force the ODE solver to use a fixed integration
+step. The target's continuous solution is evaluated at the chaser's
+sample times to calculate their separation.
+
+For the 2 dimensional model, the plots show the trajectories around
+Earth and the separation over time, with the burn locations marked.
+For the 3 dimensional model, the plots include separation over time
+and both a view of the system around the Sun and a close-up of the
+rendezvous around Earth. For the Earth close-up, I subtract Earth's
+position from each spacecraft's position at the same time. This makes
+the motion around Earth easier to see without changing the calculated
+trajectories or burn directions.
 
 \section{Simulation Checks}
 \prompt{Present checks actually performed and their outcomes. Useful checks

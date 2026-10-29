@@ -1,0 +1,10 @@
+# Main update and experiment validity assessment
+
+- Goal: pull the user's completed experiment handoff and assess whether the burn-frame fix requires reruns.
+- Preserved local tracked and untracked changes using `git stash push --include-untracked`, fast-forwarded main from `1f8a10d` to `b692bc8`, and restored changes using `git stash apply`. No conflicts. Kept the stash as backup; no commit or push performed.
+- Read the handoff, saved configurations, sweep summary, validation summary and both runner implementations. Inspected CSV/JSON counts directly: 1,252 sweep rows, 552 ok, 700 invalid-burn errors; 36 powered trials, nine coast controls. Four of the 32 new-state trials pass the project criterion, all from the case that passes under coast too.
+- Decision: old results remain historical evidence for full-inertial-velocity burns. Reoptimize the sweep and powered validation for claims about the corrected Earth-relative burns. The refined grid and chosen weights may change. Coast controls and body initial states are reusable under unchanged remaining settings.
+- Replayed all four old winner schedules using the corrected code and saved body states, without optimization or a network fetch. Final separation / relative speed: overall 1,809,598.297 m / 1,148.808 m/s; coarse 1,810,142.858 m / 1,148.160 m/s; position 1,761,882.377 m / 1,107.371 m/s; velocity 880,664.375 m / 1,107.831 m/s. These are diagnostic replays, not new optimized performances or safety certifications.
+- Recommend addressing the finite invalid-order penalty and numerical-verification limitations before full reruns. Report generator text still describes the old burn direction. No unrelated optimizer, runner or historical output changes made.
+- Updated `context/weight-sweep-handoff.md` with the assessment and supersession of its earlier no-rerun wording.
+- Verification: `python -B -m unittest discover -s tests -v` passed all 24 tests; `git diff --check` passed. No full sweep or production validation was launched.

@@ -1,0 +1,9 @@
+{
+  "sweep": "outputs/weight_sweep_fixed_sun_20261029_142048",
+  "message": "Stopped after 128 saved fixed-Sun +/-500 m/s trials; user increased 3D burn bounds to +/-1000 m/s. Keep results separate.",
+  "stage": "superseded",
+  "log": "outputs/corrected_experiments_20261029_142048.log",
+  "updated_utc": "2026-10-29T18:42:13.2284254Z",
+  "terminal_pid": 7828,
+  "validation": "outputs/weight_validation_fixed_sun_20261029_142048"
+}

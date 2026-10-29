@@ -3,20 +3,35 @@
 \providecommand\HyField@AuxAddToFields[1]{}
 \providecommand\HyField@AuxAddToCoFields[2]{}
 \@writefile{toc}{\contentsline {section}{\numberline {1}Introduction and Aim}{1}{section.1}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {1.1}The rendezvous problem}{1}{subsection.1.1}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {1.2}Project aim and research question}{1}{subsection.1.2}\protected@file@percent }
-\@writefile{toc}{\contentsline {section}{\numberline {2}Physical Model and Problem Definition}{1}{section.2}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {2.1}Assumptions and equations of motion}{1}{subsection.2.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {1.1}Spacecraft Trajectory Optimization Problem}{1}{subsection.1.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {1.2}Project Aim and Research Question}{1}{subsection.1.2}\protected@file@percent }
+\newlabel{eq:postion_error}{{1}{1}{Project Aim and Research Question}{equation.1}{}}
+\newlabel{eq:velocity_error}{{2}{1}{Project Aim and Research Question}{equation.2}{}}
+\newlabel{eq:cost_function}{{3}{1}{Project Aim and Research Question}{equation.3}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {2}Physical Model and Problem Definition}{2}{section.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {2.1}Assumptions and equations of motion}{2}{subsection.2.1}\protected@file@percent }
+\newlabel{eq:ODE}{{4}{2}{Assumptions and equations of motion}{equation.4}{}}
+\newlabel{eq:instantaneous_burns}{{5}{2}{Assumptions and equations of motion}{equation.5}{}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {2.2}Scenario and definition of success}{2}{subsection.2.2}\protected@file@percent }
-\@writefile{toc}{\contentsline {section}{\numberline {3}Computational Method}{2}{section.3}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {3.1}Trajectory propagation}{2}{subsection.3.1}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {3.2}Objective function and search}{2}{subsection.3.2}\protected@file@percent }
-\@writefile{toc}{\contentsline {section}{\numberline {4}Simulation Checks}{3}{section.4}\protected@file@percent }
-\@writefile{toc}{\contentsline {section}{\numberline {5}Experiments and Results}{3}{section.5}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {5.1}Baseline and best trajectory found}{3}{subsection.5.1}\protected@file@percent }
-\@writefile{lot}{\contentsline {table}{\numberline {1}{\ignorespaces Rendezvous performance. Blank cells await verified results.}}{3}{table.1}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {5.2}Selected comparisons}{3}{subsection.5.2}\protected@file@percent }
-\@writefile{toc}{\contentsline {section}{\numberline {6}Discussion}{3}{section.6}\protected@file@percent }
-\@writefile{toc}{\contentsline {section}{\numberline {7}Conclusion and Future Work}{4}{section.7}\protected@file@percent }
-\@writefile{toc}{\contentsline {section}{\numberline {A}Reproducibility Details}{4}{appendix.A}\protected@file@percent }
-\gdef \@abspage@last{4}
+\newlabel{eq:initial_2D_state}{{6}{2}{Scenario and definition of success}{equation.6}{}}
+\newlabel{eq:initial_2D_state_derivative}{{7}{3}{Scenario and definition of success}{equation.7}{}}
+\newlabel{eq:initial_2D_state_derivative_ODE}{{8}{3}{Scenario and definition of success}{equation.8}{}}
+\newlabel{eq:3D_ODE}{{9}{3}{Scenario and definition of success}{equation.9}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {3}Computational Method}{3}{section.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.1}Trajectory propagation}{3}{subsection.3.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {3.1.1}Two-dimensional model}{4}{subsubsection.3.1.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {3.1.2}Three-dimensional model with multiple gravitational bodies}{4}{subsubsection.3.1.2}\protected@file@percent }
+\newlabel{eq:computed_3D_acceleration}{{10}{4}{Three-dimensional model with multiple gravitational bodies}{equation.10}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.2}Burn representation}{5}{subsection.3.2}\protected@file@percent }
+\newlabel{eq:computed_burn_direction}{{11}{5}{Burn representation}{equation.11}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.3}Objective function and search}{5}{subsection.3.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.4}Trajectory reconstruction and visualization}{6}{subsection.3.4}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {4}Simulation Checks}{6}{section.4}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {5}Experiments and Results}{6}{section.5}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.1}Baseline and best trajectory found}{6}{subsection.5.1}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {1}{\ignorespaces Rendezvous performance. Blank cells await verified results.}}{7}{table.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.2}Selected comparisons}{7}{subsection.5.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {6}Discussion}{7}{section.6}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {7}Conclusion and Future Work}{7}{section.7}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {A}Reproducibility Details}{7}{appendix.A}\protected@file@percent }
+\gdef \@abspage@last{7}

@@ -17,6 +17,7 @@ These references express preferences, not enforced mission constraints.
 
 import argparse
 import csv
+import hashlib
 from datetime import datetime
 import itertools
 import json
@@ -63,7 +64,7 @@ def validate_burns(burns, duration):
         raise ValueError("Optimizer returned nonfinite burns.")
     times = burns[:, 1]
     if (np.any(times < 60) or np.any(times > duration - 60)
-            or np.any(np.diff(times) <= 0) or np.any(np.abs(burns[:, 0]) > 500)):
+            or np.any(np.diff(times) <= 0) or np.any(np.abs(burns[:, 0]) > model.MAX_BURN_DELTA_V)):
         raise ValueError("Optimizer returned out-of-bounds or unordered burns.")
 
 
@@ -205,6 +206,8 @@ def parse_args(argv=None):
     parser.add_argument("--fuel-scale", type=positive_float, default=DEFAULT_REFERENCES[2], help="Fixed comparison scale in total delta-v m/s")
     parser.add_argument("--max-runs", type=positive_int, help="Cap total saved trials, including previous trials when resuming")
     parser.add_argument("--dry-run", action="store_true", help="Show configuration without network requests or optimization")
+    parser.add_argument("--initial-states-from", type=Path,
+                        help="Reuse initial body states from a saved configuration instead of fetching ephemeris")
     destination = parser.add_mutually_exclusive_group()
     destination.add_argument("--output", type=Path, help="New output directory; existing directories are not overwritten")
     destination.add_argument("--resume", type=Path,
@@ -221,10 +224,19 @@ def parse_args(argv=None):
     return args
 
 
+def model_fingerprint():
+    """Identify both spacecraft dynamics and their gravitational-body model."""
+    return hashlib.sha256(Path(model.__file__).read_bytes() + b"\n"
+                          + Path(system.__file__).read_bytes()).hexdigest()
+
+
 def run_sweep(args):
     rows = []
+    model_hash = model_fingerprint()
     if args.resume is not None:
         metadata, rows = load_checkpoint(args.resume)
+        if metadata.get("model_sha256") != model_hash:
+            raise ValueError("Saved sweep uses a different or unrecorded model; start a new output directory.")
         args.epoch = metadata["epoch_utc"]
         args.duration = metadata["duration_s"]
         args.burns = metadata["number_of_burns"]
@@ -254,12 +266,17 @@ def run_sweep(args):
             "comparison_references_m_m_s_m_s": references,
             "ranking": "(final_separation / position_scale)^2 + (final_relative_speed / velocity_scale)^2 + total_delta_v / fuel_scale",
             "optimizer": "Existing rendezvous() settings, including seed 42; unchanged",
+            "model_sha256": model_hash,
+            "gravitational_model": "Sun fixed at origin; Earth, Moon and Jupiter moving",
+            "burn_direction": "instantaneous Earth-relative velocity",
+            "invalid_burn_penalty": "positive infinity",
+            "burn_magnitude_limit_m_s": model.MAX_BURN_DELTA_V,
             "notes": [
                 "Raw optimizer/trajectory costs with different weights are not comparable.",
                 "Only the best coarse tuple is refined; this is not a guarantee of globally ideal weights.",
                 "Uniform scaling of all weights is theoretically redundant; all requested tuples are still tested.",
                 "Minimum separation and surface screening use sampled positions, not continuous extrema/events.",
-                "The existing 1e12 invalid-burn penalty can be cheaper than valid high-weight costs; invalid outputs are recorded and excluded.",
+                "Invalid-order burn sequences receive positive infinity; invalid returned outputs are still excluded.",
                 "Total delta-v is a fuel proxy, not propellant mass. No new optimizer constraints are imposed.",
             ],
         }
@@ -274,8 +291,16 @@ def run_sweep(args):
         print("Reusing saved initial ephemeris and propagating bodies once...", flush=True)
         initial = np.asarray(metadata["initial_body_states_si"], dtype=float)
     else:
-        print("Fetching one initial ephemeris and propagating bodies once...", flush=True)
-        initial = system.get_initial_states(args.epoch)
+        if args.initial_states_from is not None:
+            saved = json.loads(args.initial_states_from.read_text(encoding="utf-8"))
+            if saved["epoch_utc"] != args.epoch:
+                raise ValueError("Saved body states and requested epoch differ.")
+            print("Reusing saved initial ephemeris and propagating bodies once...", flush=True)
+            initial = np.asarray(saved["initial_body_states_si"], dtype=float)
+            metadata["initial_states_source"] = str(args.initial_states_from)
+        else:
+            print("Fetching one initial ephemeris and propagating bodies once...", flush=True)
+            initial = system.get_initial_states(args.epoch)
     bodies = system.simulate_system(initial, args.duration)
     chaser = chaser_relative + initial[1]
     target = target_relative + initial[1]

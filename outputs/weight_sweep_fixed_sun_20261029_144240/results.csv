@@ -1,0 +1,1 @@
+stage,w_position,w_velocity,w_delta_v,status,message,final_separation_m,minimum_sampled_separation_m,minimum_time_s,final_relative_speed_m_s,total_delta_v_m_s,comparison_score,minimum_sampled_surface_altitude_m,optimizer_score,trajectory_score,burns_json,elapsed_s

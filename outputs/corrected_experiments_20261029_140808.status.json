@@ -1,0 +1,9 @@
+{
+  "sweep": "outputs/weight_sweep_earth_relative_20261029_140808",
+  "message": "Stopped at user-requested model change: Sun now physically fixed. Preserved 75 completed moving-Sun trials; do not resume under changed dynamics.",
+  "stage": "superseded",
+  "log": "outputs/corrected_experiments_20261029_140808.log",
+  "updated_utc": "2026-10-29T18:19:51.0854403Z",
+  "terminal_pid": 32716,
+  "validation": "outputs/weight_validation_earth_relative_20261029_140808"
+}

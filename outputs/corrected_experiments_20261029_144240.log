@@ -1,0 +1,20 @@
+﻿**********************
+Windows PowerShell transcript start
+Start time: 20261029144240
+Username: MainDesktop2\Hasnain
+RunAs User: MainDesktop2\Hasnain
+Configuration Name: 
+Machine: MAINDESKTOP2 (Microsoft Windows NT 10.0.26200.0)
+Host Application: C:\WINDOWS\System32\WindowsPowerShell\v1.0\powershell.exe -NoLogo -NoProfile -NoExit -ExecutionPolicy Bypass -File D:\Hasnain\Personal\dev\Simplified_Multiple_Impulse_Spacecraft_Rendezvous_Optimization\context\run-corrected-experiments.ps1 -RunTag 20261029_144240
+Process ID: 31880
+PSVersion: 5.1.26100.9711
+PSEdition: Desktop
+PSCompatibleVersions: 1.0, 2.0, 3.0, 4.0, 5.0, 5.1.26100.9711
+BuildVersion: 10.0.26100.9711
+CLRVersion: 4.0.30319.42000
+WSManStackVersion: 3.0
+PSRemotingProtocolVersion: 2.3
+SerializationVersion: 1.1.0.1
+**********************
+Transcript started, output file is outputs/corrected_experiments_20261029_144240.log
+STAGE 1: Complete unit tests

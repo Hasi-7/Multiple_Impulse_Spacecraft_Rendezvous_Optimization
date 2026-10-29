@@ -1,0 +1,9 @@
+﻿{
+    "sweep":  "outputs/weight_sweep_fixed_sun_20261029_144240",
+    "message":  "Running 1000 coarse combinations followed by refinement",
+    "stage":  "sweep",
+    "log":  "outputs/corrected_experiments_20261029_144240.log",
+    "updated_utc":  "2026-10-29T18:42:43.3387745Z",
+    "terminal_pid":  31880,
+    "validation":  "outputs/weight_validation_fixed_sun_20261029_144240"
+}

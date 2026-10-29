@@ -92,13 +92,14 @@ def write_report(output, configuration, trials, coasts, complete):
              f'Source trials: {configuration["source_trial_count"]}; statuses: {configuration["source_statuses"]}',
              '', 'METHOD AND SUCCESS CRITERIA',
              f'Epoch: {m["epoch_utc"]} UTC; duration: {m["duration_s"]} s; burns: {m["number_of_burns"]}.',
+             'Gravitational model: ' + m.get('gravitational_model', 'Historical moving-Sun four-body model'),
              f'Samples per powered segment: {m["samples_per_segment"]}; coast: 3000 samples.',
              'Same saved body ephemeris, four-body dynamics, optimizer defaults and seed 42.',
              'Each candidate is reoptimized for each initial state. Burn sequences are NOT reused.',
              'Candidates were frozen from the original sweep; no new sweep or validation-state tuning.',
              'Strict rendezvous: final separation <= 100 m AND relative speed <= 0.1 m/s, surface-safe.',
-             'Loose proximity: <= 1000 m AND <= 1 m/s, surface-safe. These are evaluation choices,',
-             'not official mission requirements. A close flyby alone is not rendezvous.',
+             'Project rendezvous criterion (also labelled loose below): <= 1000 m AND <= 1 m/s, surface-safe.',
+             'The strict criterion is a secondary diagnostic. A close flyby alone is not rendezvous.',
              'Comparison score uses the saved fixed scales; raw weighted costs are not cross-comparable.',
              '', 'WEIGHTS (position, velocity, delta-v) AND ORIGINAL SWEEP RESULTS']
     for c in configuration['candidates']:
@@ -155,10 +156,13 @@ def write_report(output, configuration, trials, coasts, complete):
               'Near-start cases may already be close: use coast comparison rather than final distance alone.',
               '', 'LIMITATIONS AND MODEL OBSERVATIONS',
               '- Deterministic hand-selected states, one optimizer seed; not Monte Carlo success probabilities.',
-              '- Two signed scalar burns, each bounded at 500 m/s, in the existing velocity direction.',
-              '- IMPORTANT: burn_size uses full inertial (Sun-frame) velocity, not Earth-relative velocity.',
-              '  Thus burns are not general 3-axis controls or necessarily Earth-orbit tangential burns.',
-              '- Existing invalid-order penalty is 1e12; high-weight valid costs can exceed it.',
+              f'- Two signed scalar burns, each bounded at {m.get("burn_magnitude_limit_m_s", 500):g} m/s.',
+              ('- Burns follow instantaneous Earth-relative velocity; still not general 3-axis controls.'
+               if m.get('burn_direction') == 'instantaneous Earth-relative velocity'
+               else '- IMPORTANT: historical burns use full inertial (Sun-frame) velocity, not Earth-relative velocity.'),
+              ('- Invalid burn sequences receive positive infinity.'
+               if m.get('invalid_burn_penalty') == 'positive infinity'
+               else '- Historical invalid-order penalty is 1e12; valid high-weight costs can exceed it.'),
               '- Existing DOP853 rtol=1e-6 and large Sun-frame coordinates are unchanged. No independent',
               '  tighter-tolerance verification was performed; these are model-level results, not flight validation.',
               '- Minimum distances and surface checks are sampled; no continuous collision guarantee.',
@@ -176,6 +180,9 @@ def main():
     parser.add_argument('--output', type=Path)
     args = parser.parse_args()
     metadata, source_rows = sweep.load_checkpoint(args.source)
+    current_hash = sweep.model_fingerprint()
+    if metadata.get('model_sha256') != current_hash:
+        raise ValueError('Source sweep uses a different or unrecorded model; rerun the sweep before validation.')
     configuration = dict(source_directory=str(args.source), source_configuration=metadata,
                          source_trial_count=len(source_rows), source_statuses=dict(Counter(r['status'] for r in source_rows)),
                          candidates=candidates(source_rows), scenarios=scenarios(metadata))

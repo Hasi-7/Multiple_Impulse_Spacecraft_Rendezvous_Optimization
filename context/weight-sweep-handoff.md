@@ -1,5 +1,51 @@
 # Weight sweep and validation report handoff
 
+## Fixed-Sun model supersedes the moving-Sun rerun
+
+The user requested a physically fixed Sun on 2026-10-29. Sun position and
+velocity are now held at zero while the other bodies move under gravity.
+The corrected moving-Sun rerun `20261029_140808` was stopped with 75 readable
+saved trials. Its outputs are preserved, its status is superseded, and no
+validation batch for it was started.
+
+New visible terminal PID 7828 runs `context/run-corrected-experiments.ps1`
+with tag `20261029_142048`. It performs the full sweep then all 36 validations.
+See `context/current-task.md` for live status and output paths. All 28 code
+checks pass. Fingerprints now include both spacecraft and body dynamics;
+old moving-Sun results cannot be resumed or validated as fixed-Sun results.
+
+## Corrected-model assessment (2026-10-29, after pulling b692bc8)
+
+This update supersedes the earlier "No rerun is needed" statement for work
+using the corrected Earth-relative burn model. The old batches are complete,
+but evaluated a different burn-direction convention. Preserve them as historical
+results rather than reusing their rankings or success counts for the new model.
+
+- Pulled `origin/main` by fast-forward to `b692bc8` and reapplied local changes
+  without conflicts. A backup of those local changes remains in the Git stash.
+- Verified 1,252 sweep rows (552 ok, 700 errors), 36 completed powered validation
+  trials and nine coast controls. All 700 sweep errors are invalid returned burns.
+- The user-authorized fix in `Multiple_Gravitational_Objects.py` now subtracts
+  Earth's velocity at each burn time in both scoring and trajectory reconstruction.
+- Both weight selection and powered validation must be reoptimized for conclusions
+  about the corrected model. A new coarse sweep may select a different refinement
+  neighbourhood, so its final trial count need not be exactly 1,252.
+- Existing body initial states, test scenarios and no-burn coast controls remain
+  applicable when the remaining dynamics/settings are unchanged. New reporting
+  must distinguish their provenance and use the project criterion of 1 km / 1 m/s.
+- Diagnostic only: replaying the old overall winner's unchanged burn schedule
+  under the corrected model gives 1,809,598.297 m / 1,148.808 m/s, compared with
+  the recorded 589,358.494 m / 299.374 m/s. This was not a new optimization and
+  does not establish the attainable performance of the corrected model.
+- Before a full rerun, address the existing finite invalid-sequence penalty and
+  verify promising terminal results with tighter numerical tolerances. The present
+  `1e12` penalty can beat valid costs; changing it is separate from the burn fix.
+- Use fresh output locations; do not resume the old sweep with changed physics.
+  Update the validation report generator's historical full-inertial-burn wording
+  before generating a corrected-model report.
+- All 24 unit tests passed after the pull. No production sweep or 36-trial batch
+  was restarted as part of this assessment.
+
 ## User goal
 Take the returned weight-sweep weights, test them on other initial spacecraft
 states, assess rendezvous performance, and provide a separate `.txt` report of

@@ -1,0 +1,369 @@
+﻿**********************
+Windows PowerShell transcript start
+Start time: 20261029142048
+Username: MainDesktop2\Hasnain
+RunAs User: MainDesktop2\Hasnain
+Configuration Name: 
+Machine: MAINDESKTOP2 (Microsoft Windows NT 10.0.26200.0)
+Host Application: C:\WINDOWS\System32\WindowsPowerShell\v1.0\powershell.exe -NoLogo -NoProfile -NoExit -ExecutionPolicy Bypass -File D:\Hasnain\Personal\dev\Simplified_Multiple_Impulse_Spacecraft_Rendezvous_Optimization\context\run-corrected-experiments.ps1 -RunTag 20261029_142048
+Process ID: 7828
+PSVersion: 5.1.26100.9711
+PSEdition: Desktop
+PSCompatibleVersions: 1.0, 2.0, 3.0, 4.0, 5.0, 5.1.26100.9711
+BuildVersion: 10.0.26100.9711
+CLRVersion: 4.0.30319.42000
+WSManStackVersion: 3.0
+PSRemotingProtocolVersion: 2.3
+SerializationVersion: 1.1.0.1
+**********************
+Transcript started, output file is outputs/corrected_experiments_20261029_142048.log
+STAGE 1: Complete unit tests
+test_coarse_then_refinement_and_deduplication (test_weight_sweep.WeightSweepTests.test_coarse_then_refinement_and_dedupl
+ication) ... ok
+test_dry_run_makes_no_network_or_optimizer_calls (test_weight_sweep.WeightSweepTests.test_dry_run_makes_no_network_or_op
+timizer_calls) ... ok
+test_failed_trial_is_saved_and_limit_prevents_refinement (test_weight_sweep.WeightSweepTests.test_failed_trial_is_saved_
+and_limit_prevents_refinement) ... ok
+test_fingerprint_includes_gravitational_body_dynamics (test_weight_sweep.WeightSweepTests.test_fingerprint_includes_grav
+itational_body_dynamics) ... ok
+test_fixed_comparison_and_invalid_trials (test_weight_sweep.WeightSweepTests.test_fixed_comparison_and_invalid_trials) .
+.. ok
+test_interrupt_preserves_completed_trials (test_weight_sweep.WeightSweepTests.test_interrupt_preserves_completed_trials)
+ ... ok
+test_new_sweep_reuses_saved_ephemeris_without_fetch (test_weight_sweep.WeightSweepTests.test_new_sweep_reuses_saved_ephe
+meris_without_fetch) ... ok
+test_resume_appends_next_trial_without_refetching_or_changing_configuration (test_weight_sweep.WeightSweepTests.test_res
+ume_appends_next_trial_without_refetching_or_changing_configuration) ... ok
+test_resume_refinement_keeps_original_coarse_centre (test_weight_sweep.WeightSweepTests.test_resume_refinement_keeps_ori
+ginal_coarse_centre) ... ok
+test_resume_rejects_a_different_model_before_running_trials (test_weight_sweep.WeightSweepTests.test_resume_rejects_a_di
+fferent_model_before_running_trials) ... ok
+test_resume_rejects_truncated_csv_without_modifying_it (test_weight_sweep.WeightSweepTests.test_resume_rejects_truncated
+_csv_without_modifying_it) ... ok
+
+----------------------------------------------------------------------
+Ran 28 tests in 1.498s
+
+OK
+STAGE 2: Full corrected-model weight sweep -> outputs/weight_sweep_fixed_sun_20261029_142048
+{
+  "epoch_utc": "2026-10-27 12:00:00",
+  "duration_s": 3600.0,
+  "number_of_burns": 2,
+  "samples_per_segment": 1000,
+  "max_runs": null,
+  "chaser_earth_relative_si": [
+    7000000.0,
+    -500000.0,
+    300000.0,
+    0.0,
+    7400.0,
+    500.0
+  ],
+  "target_earth_relative_si": [
+    7000000.0,
+    0.0,
+    0.0,
+    0.0,
+    7546.0,
+    0.0
+  ],
+  "initial_separation_m": 583095.18948453,
+  "initial_relative_speed_m_s": 520.8800245737976,
+  "coarse_values": [
+    0.001,
+    0.01,
+    0.1,
+    1.0,
+    10.0,
+    100.0,
+    1000.0,
+    10000.0,
+    100000.0,
+    1000000.0
+  ],
+  "coarse_combinations": 1000,
+  "maximum_refined_combinations_before_deduplication": 512,
+  "comparison_references_m_m_s_m_s": [
+    100.0,
+    0.1,
+    500.0
+  ],
+  "ranking": "(final_separation / position_scale)^2 + (final_relative_speed / velocity_scale)^2 + total_delta_v / fuel_scale",
+  "optimizer": "Existing rendezvous() settings, including seed 42; unchanged",
+  "model_sha256": "3f5de9b98655fb7cf6031e0806d40949cbac91c3c22e0d663319a2334bace387",
+  "gravitational_model": "Sun fixed at origin; Earth, Moon and Jupiter moving",
+  "burn_direction": "instantaneous Earth-relative velocity",
+  "invalid_burn_penalty": "positive infinity",
+  "notes": [
+    "Raw optimizer/trajectory costs with different weights are not comparable.",
+    "Only the best coarse tuple is refined; this is not a guarantee of globally ideal weights.",
+    "Uniform scaling of all weights is theoretically redundant; all requested tuples are still tested.",
+    "Minimum separation and surface screening use sampled positions, not continuous extrema/events.",
+    "Invalid-order burn sequences receive positive infinity; invalid returned outputs are still excluded.",
+    "Total delta-v is a fuel proxy, not propellant mass. No new optimizer constraints are imposed."
+  ]
+}
+Reusing saved initial ephemeris and propagating bodies once...
+Trial 1 [coarse] weights=(0.001, 0.001, 0.001)
+  ok; final=563409.7962879709 m; speed=722.4636672050043 m/s; delta-v=668.6829225135203 m/s
+Trial 2 [coarse] weights=(0.001, 0.001, 0.01)
+  ok; final=563409.7962879709 m; speed=722.4636672050043 m/s; delta-v=668.6829225135203 m/s
+Trial 3 [coarse] weights=(0.001, 0.001, 0.1)
+  ok; final=563409.7962879709 m; speed=722.4636672050043 m/s; delta-v=668.6829225135203 m/s
+Trial 4 [coarse] weights=(0.001, 0.001, 1.0)
+  ok; final=563409.7962879709 m; speed=722.4636672050043 m/s; delta-v=668.6829225135203 m/s
+Trial 5 [coarse] weights=(0.001, 0.001, 10.0)
+  ok; final=563409.7962879709 m; speed=722.4636672050043 m/s; delta-v=668.6829225135203 m/s
+Trial 6 [coarse] weights=(0.001, 0.001, 100.0)
+  ok; final=563409.7962879709 m; speed=722.4636672050043 m/s; delta-v=668.6829225135203 m/s
+Trial 7 [coarse] weights=(0.001, 0.001, 1000.0)
+  ok; final=563409.7962879709 m; speed=722.4636672050043 m/s; delta-v=668.6829225135203 m/s
+Trial 8 [coarse] weights=(0.001, 0.001, 10000.0)
+  ok; final=563398.3886028258 m; speed=668.5535936218907 m/s; delta-v=641.2150023149353 m/s
+Trial 9 [coarse] weights=(0.001, 0.001, 100000.0)
+  ok; final=563808.5239769475 m; speed=447.4325884166918 m/s; delta-v=559.8386321248366 m/s
+Trial 10 [coarse] weights=(0.001, 0.001, 1000000.0)
+  ok; final=639008.9125315321 m; speed=382.85142587058004 m/s; delta-v=387.7387527575564 m/s
+Trial 11 [coarse] weights=(0.001, 0.01, 0.001)
+  ok; final=563409.7962879709 m; speed=722.4636672050043 m/s; delta-v=668.6829225135203 m/s
+Trial 12 [coarse] weights=(0.001, 0.01, 0.01)
+  ok; final=563409.7962879709 m; speed=722.4636672050043 m/s; delta-v=668.6829225135203 m/s
+Trial 13 [coarse] weights=(0.001, 0.01, 0.1)
+  ok; final=563409.7962879709 m; speed=722.4636672050043 m/s; delta-v=668.6829225135203 m/s
+Trial 14 [coarse] weights=(0.001, 0.01, 1.0)
+  ok; final=563409.7962879709 m; speed=722.4636672050043 m/s; delta-v=668.6829225135203 m/s
+Trial 15 [coarse] weights=(0.001, 0.01, 10.0)
+  ok; final=563409.7962879709 m; speed=722.4636672050043 m/s; delta-v=668.6829225135203 m/s
+Trial 16 [coarse] weights=(0.001, 0.01, 100.0)
+  ok; final=563409.7962879709 m; speed=722.4636672050043 m/s; delta-v=668.6829225135203 m/s
+Trial 17 [coarse] weights=(0.001, 0.01, 1000.0)
+  ok; final=563409.7962879709 m; speed=722.4636672050043 m/s; delta-v=668.6829225135203 m/s
+Trial 18 [coarse] weights=(0.001, 0.01, 10000.0)
+  ok; final=563398.3886028258 m; speed=668.5535936218907 m/s; delta-v=641.2150023149353 m/s
+Trial 19 [coarse] weights=(0.001, 0.01, 100000.0)
+  ok; final=563808.5239769475 m; speed=447.4325884166918 m/s; delta-v=559.8386321248366 m/s
+Trial 20 [coarse] weights=(0.001, 0.01, 1000000.0)
+  ok; final=639008.9125315321 m; speed=382.85142587058004 m/s; delta-v=387.7387527575564 m/s
+Trial 21 [coarse] weights=(0.001, 0.1, 0.001)
+  ok; final=563409.7962879709 m; speed=722.4636672050043 m/s; delta-v=668.6829225135203 m/s
+Trial 22 [coarse] weights=(0.001, 0.1, 0.01)
+  ok; final=563409.7962879709 m; speed=722.4636672050043 m/s; delta-v=668.6829225135203 m/s
+Trial 23 [coarse] weights=(0.001, 0.1, 0.1)
+  ok; final=563409.7962879709 m; speed=722.4636672050043 m/s; delta-v=668.6829225135203 m/s
+Trial 24 [coarse] weights=(0.001, 0.1, 1.0)
+  ok; final=563409.7962879709 m; speed=722.4636672050043 m/s; delta-v=668.6829225135203 m/s
+Trial 25 [coarse] weights=(0.001, 0.1, 10.0)
+  ok; final=563409.7962879709 m; speed=722.4636672050043 m/s; delta-v=668.6829225135203 m/s
+Trial 26 [coarse] weights=(0.001, 0.1, 100.0)
+  ok; final=563409.7962879709 m; speed=722.4636672050043 m/s; delta-v=668.6829225135203 m/s
+Trial 27 [coarse] weights=(0.001, 0.1, 1000.0)
+  ok; final=563409.7962879709 m; speed=722.4636672050043 m/s; delta-v=668.6829225135203 m/s
+Trial 28 [coarse] weights=(0.001, 0.1, 10000.0)
+  ok; final=563429.7023497972 m; speed=454.327997404913 m/s; delta-v=568.784742454963 m/s
+Trial 29 [coarse] weights=(0.001, 0.1, 100000.0)
+  ok; final=563808.5239769475 m; speed=447.4325884166918 m/s; delta-v=559.8386321248366 m/s
+Trial 30 [coarse] weights=(0.001, 0.1, 1000000.0)
+  ok; final=639008.9125315321 m; speed=382.85142587058004 m/s; delta-v=387.7387527575564 m/s
+Trial 31 [coarse] weights=(0.001, 1.0, 0.001)
+  ok; final=563436.108477868 m; speed=700.5091218085743 m/s; delta-v=653.1808393436415 m/s
+Trial 32 [coarse] weights=(0.001, 1.0, 0.01)
+  ok; final=563436.108477868 m; speed=700.5091218085743 m/s; delta-v=653.1808393436415 m/s
+Trial 33 [coarse] weights=(0.001, 1.0, 0.1)
+  ok; final=563436.108477868 m; speed=700.5091218085743 m/s; delta-v=653.1808393436415 m/s
+Trial 34 [coarse] weights=(0.001, 1.0, 1.0)
+  ok; final=563436.108477868 m; speed=700.5091218085743 m/s; delta-v=653.1808393436415 m/s
+Trial 35 [coarse] weights=(0.001, 1.0, 10.0)
+  ok; final=563436.108477868 m; speed=700.5091218085743 m/s; delta-v=653.1808393436415 m/s
+Trial 36 [coarse] weights=(0.001, 1.0, 100.0)
+  ok; final=563436.108477868 m; speed=700.5091218085743 m/s; delta-v=653.1808393436415 m/s
+Trial 37 [coarse] weights=(0.001, 1.0, 1000.0)
+  ok; final=563436.108477868 m; speed=700.5091218085743 m/s; delta-v=653.1808393436415 m/s
+Trial 38 [coarse] weights=(0.001, 1.0, 10000.0)
+  ok; final=563452.4773908368 m; speed=383.68293404701086 m/s; delta-v=576.9118333552549 m/s
+Trial 39 [coarse] weights=(0.001, 1.0, 100000.0)
+  ok; final=563808.5239769475 m; speed=447.4325884166918 m/s; delta-v=559.8386321248366 m/s
+Trial 40 [coarse] weights=(0.001, 1.0, 1000000.0)
+  ok; final=639008.9125315321 m; speed=382.85142587058004 m/s; delta-v=387.7387527575564 m/s
+Trial 41 [coarse] weights=(0.001, 10.0, 0.001)
+  ok; final=563633.3292571122 m; speed=273.774889842173 m/s; delta-v=615.2423904251855 m/s
+Trial 42 [coarse] weights=(0.001, 10.0, 0.01)
+  ok; final=563690.0690913269 m; speed=270.8516630114348 m/s; delta-v=615.5524363130813 m/s
+Trial 43 [coarse] weights=(0.001, 10.0, 0.1)
+  ok; final=563620.979755662 m; speed=272.1872531663379 m/s; delta-v=615.1318798066836 m/s
+Trial 44 [coarse] weights=(0.001, 10.0, 1.0)
+  ok; final=563653.0277170612 m; speed=272.60389117599425 m/s; delta-v=615.3668388172359 m/s
+Trial 45 [coarse] weights=(0.001, 10.0, 10.0)
+  ok; final=563621.4560595361 m; speed=275.3904687188158 m/s; delta-v=615.2415370539422 m/s
+Trial 46 [coarse] weights=(0.001, 10.0, 100.0)
+  ok; final=563612.929064486 m; speed=275.36212754011615 m/s; delta-v=615.0742075518996 m/s
+Trial 47 [coarse] weights=(0.001, 10.0, 1000.0)
+  ok; final=563677.624323302 m; speed=224.70237994391627 m/s; delta-v=653.9344961929091 m/s
+Trial 48 [coarse] weights=(0.001, 10.0, 10000.0)
+  ok; final=563401.391318928 m; speed=336.1556197869142 m/s; delta-v=585.9665606208666 m/s
+Trial 49 [coarse] weights=(0.001, 10.0, 100000.0)
+  ok; final=564699.2814295779 m; speed=362.6749831587619 m/s; delta-v=548.8116939627253 m/s
+Trial 50 [coarse] weights=(0.001, 10.0, 1000000.0)
+  ok; final=642686.4814436432 m; speed=397.1641124772343 m/s; delta-v=382.27592639810473 m/s
+Trial 51 [coarse] weights=(0.001, 100.0, 0.001)
+  ok; final=563573.6955417477 m; speed=181.61483569260287 m/s; delta-v=828.0832408206508 m/s
+Trial 52 [coarse] weights=(0.001, 100.0, 0.01)
+  ok; final=563573.6955417477 m; speed=181.61483569260287 m/s; delta-v=828.0832408206508 m/s
+Trial 53 [coarse] weights=(0.001, 100.0, 0.1)
+  ok; final=563573.6955417477 m; speed=181.61483569260287 m/s; delta-v=828.0832408206508 m/s
+Trial 54 [coarse] weights=(0.001, 100.0, 1.0)
+  ok; final=563573.6955417477 m; speed=181.61483569260287 m/s; delta-v=828.0832408206508 m/s
+Trial 55 [coarse] weights=(0.001, 100.0, 10.0)
+  ok; final=563573.6955417477 m; speed=181.61483569260287 m/s; delta-v=828.0832408206508 m/s
+Trial 56 [coarse] weights=(0.001, 100.0, 100.0)
+  ok; final=563573.6955417477 m; speed=181.61483569260287 m/s; delta-v=828.0832408206508 m/s
+Trial 57 [coarse] weights=(0.001, 100.0, 1000.0)
+  ok; final=563792.8516895508 m; speed=169.52025489283756 m/s; delta-v=821.8410587217235 m/s
+Trial 58 [coarse] weights=(0.001, 100.0, 10000.0)
+  ok; final=563467.0804674404 m; speed=194.13506272549222 m/s; delta-v=751.7801643240836 m/s
+Trial 59 [coarse] weights=(0.001, 100.0, 100000.0)
+  ok; final=565515.6992644002 m; speed=305.57377781052594 m/s; delta-v=556.6977993616058 m/s
+Trial 60 [coarse] weights=(0.001, 100.0, 1000000.0)
+  ok; final=625070.471610138 m; speed=362.6006499496103 m/s; delta-v=407.40066932430454 m/s
+Trial 61 [coarse] weights=(0.001, 1000.0, 0.001)
+  ok; final=565377.7652709476 m; speed=149.24342504439022 m/s; delta-v=918.6222834929454 m/s
+Trial 62 [coarse] weights=(0.001, 1000.0, 0.01)
+  ok; final=565377.7652709476 m; speed=149.24342504439022 m/s; delta-v=918.6222834929454 m/s
+Trial 63 [coarse] weights=(0.001, 1000.0, 0.1)
+  ok; final=565377.7652709476 m; speed=149.24342504439022 m/s; delta-v=918.6222834929454 m/s
+Trial 64 [coarse] weights=(0.001, 1000.0, 1.0)
+  ok; final=565377.7652709476 m; speed=149.24342504439022 m/s; delta-v=918.6222834929454 m/s
+Trial 65 [coarse] weights=(0.001, 1000.0, 10.0)
+  ok; final=565377.7652709476 m; speed=149.24342504439022 m/s; delta-v=918.6222834929454 m/s
+Trial 66 [coarse] weights=(0.001, 1000.0, 100.0)
+  ok; final=565377.7652709476 m; speed=149.24342504439022 m/s; delta-v=918.6222834929454 m/s
+Trial 67 [coarse] weights=(0.001, 1000.0, 1000.0)
+  ok; final=565377.7652709476 m; speed=149.24342504439022 m/s; delta-v=918.6222834929454 m/s
+Trial 68 [coarse] weights=(0.001, 1000.0, 10000.0)
+  ok; final=565180.1913925785 m; speed=145.61403934520223 m/s; delta-v=935.3980450409756 m/s
+Trial 69 [coarse] weights=(0.001, 1000.0, 100000.0)
+  ok; final=566544.3251216261 m; speed=177.15226963940967 m/s; delta-v=706.5236426546476 m/s
+Trial 70 [coarse] weights=(0.001, 1000.0, 1000000.0)
+  ok; final=599497.5893887493 m; speed=307.1700867095077 m/s; delta-v=459.801795601986 m/s
+Trial 71 [coarse] weights=(0.001, 10000.0, 0.001)
+  ok; final=888394.2529660614 m; speed=134.5374036350047 m/s; delta-v=672.4836509850819 m/s
+Trial 72 [coarse] weights=(0.001, 10000.0, 0.01)
+  ok; final=888394.2529660614 m; speed=134.5374036350047 m/s; delta-v=672.4836509850819 m/s
+Trial 73 [coarse] weights=(0.001, 10000.0, 0.1)
+  ok; final=888394.2529660614 m; speed=134.5374036350047 m/s; delta-v=672.4836509850819 m/s
+Trial 74 [coarse] weights=(0.001, 10000.0, 1.0)
+  ok; final=888394.2529660614 m; speed=134.5374036350047 m/s; delta-v=672.4836509850819 m/s
+Trial 75 [coarse] weights=(0.001, 10000.0, 10.0)
+  ok; final=888394.2529660614 m; speed=134.5374036350047 m/s; delta-v=672.4836509850819 m/s
+Trial 76 [coarse] weights=(0.001, 10000.0, 100.0)
+  ok; final=888394.2529660614 m; speed=134.5374036350047 m/s; delta-v=672.4836509850819 m/s
+Trial 77 [coarse] weights=(0.001, 10000.0, 1000.0)
+  ok; final=888394.2529660614 m; speed=134.5374036350047 m/s; delta-v=672.4836509850819 m/s
+Trial 78 [coarse] weights=(0.001, 10000.0, 10000.0)
+  ok; final=885337.8291346525 m; speed=137.11629821982322 m/s; delta-v=674.6812371949214 m/s
+Trial 79 [coarse] weights=(0.001, 10000.0, 100000.0)
+  ok; final=886544.1386084434 m; speed=135.859000140558 m/s; delta-v=668.986491864843 m/s
+Trial 80 [coarse] weights=(0.001, 10000.0, 1000000.0)
+  ok; final=885824.1100362143 m; speed=148.6229673142568 m/s; delta-v=617.8201291699766 m/s
+Trial 81 [coarse] weights=(0.001, 100000.0, 0.001)
+  ok; final=890957.9797858632 m; speed=133.96724177310628 m/s; delta-v=671.766571388643 m/s
+Trial 82 [coarse] weights=(0.001, 100000.0, 0.01)
+  ok; final=890957.9797858632 m; speed=133.96724177310628 m/s; delta-v=671.766571388643 m/s
+Trial 83 [coarse] weights=(0.001, 100000.0, 0.1)
+  ok; final=890957.9797858632 m; speed=133.96724177310628 m/s; delta-v=671.766571388643 m/s
+Trial 84 [coarse] weights=(0.001, 100000.0, 1.0)
+  ok; final=890957.9797858632 m; speed=133.96724177310628 m/s; delta-v=671.766571388643 m/s
+Trial 85 [coarse] weights=(0.001, 100000.0, 10.0)
+  ok; final=890957.9797858632 m; speed=133.96724177310628 m/s; delta-v=671.766571388643 m/s
+Trial 86 [coarse] weights=(0.001, 100000.0, 100.0)
+  ok; final=890957.9797858632 m; speed=133.96724177310628 m/s; delta-v=671.766571388643 m/s
+Trial 87 [coarse] weights=(0.001, 100000.0, 1000.0)
+  ok; final=890957.9797858632 m; speed=133.96724177310628 m/s; delta-v=671.766571388643 m/s
+Trial 88 [coarse] weights=(0.001, 100000.0, 10000.0)
+  ok; final=892951.7646244148 m; speed=133.9386682686778 m/s; delta-v=671.5264722518476 m/s
+Trial 89 [coarse] weights=(0.001, 100000.0, 100000.0)
+  ok; final=891505.441699915 m; speed=133.96557777628544 m/s; delta-v=671.38727054318 m/s
+Trial 90 [coarse] weights=(0.001, 100000.0, 1000000.0)
+  ok; final=890419.0675052119 m; speed=134.0707243593532 m/s; delta-v=670.0478503262889 m/s
+Trial 91 [coarse] weights=(0.001, 1000000.0, 0.001)
+  ok; final=897671.3613592228 m; speed=133.9501333125217 m/s; delta-v=670.5873263640564 m/s
+Trial 92 [coarse] weights=(0.001, 1000000.0, 0.01)
+  ok; final=897671.3613592228 m; speed=133.9501333125217 m/s; delta-v=670.5873263640564 m/s
+Trial 93 [coarse] weights=(0.001, 1000000.0, 0.1)
+  ok; final=897671.3613592228 m; speed=133.9501333125217 m/s; delta-v=670.5873263640564 m/s
+Trial 94 [coarse] weights=(0.001, 1000000.0, 1.0)
+  ok; final=897671.3613592228 m; speed=133.9501333125217 m/s; delta-v=670.5873263640564 m/s
+Trial 95 [coarse] weights=(0.001, 1000000.0, 10.0)
+  ok; final=897671.3613592228 m; speed=133.9501333125217 m/s; delta-v=670.5873263640564 m/s
+Trial 96 [coarse] weights=(0.001, 1000000.0, 100.0)
+  ok; final=897671.3613592228 m; speed=133.9501333125217 m/s; delta-v=670.5873263640564 m/s
+Trial 97 [coarse] weights=(0.001, 1000000.0, 1000.0)
+  ok; final=897671.3613592228 m; speed=133.9501333125217 m/s; delta-v=670.5873263640564 m/s
+Trial 98 [coarse] weights=(0.001, 1000000.0, 10000.0)
+  ok; final=897671.3613592228 m; speed=133.9501333125217 m/s; delta-v=670.5873263640564 m/s
+Trial 99 [coarse] weights=(0.001, 1000000.0, 100000.0)
+  ok; final=897671.3613592228 m; speed=133.9501333125217 m/s; delta-v=670.5873263640564 m/s
+Trial 100 [coarse] weights=(0.001, 1000000.0, 1000000.0)
+  ok; final=899036.7494167504 m; speed=133.91648270512988 m/s; delta-v=671.3287424827397 m/s
+Trial 101 [coarse] weights=(0.01, 0.001, 0.001)
+  ok; final=563409.7962879709 m; speed=722.4636672050043 m/s; delta-v=668.6829225135203 m/s
+Trial 102 [coarse] weights=(0.01, 0.001, 0.01)
+  ok; final=563409.7962879709 m; speed=722.4636672050043 m/s; delta-v=668.6829225135203 m/s
+Trial 103 [coarse] weights=(0.01, 0.001, 0.1)
+  ok; final=563409.7962879709 m; speed=722.4636672050043 m/s; delta-v=668.6829225135203 m/s
+Trial 104 [coarse] weights=(0.01, 0.001, 1.0)
+  ok; final=563409.7962879709 m; speed=722.4636672050043 m/s; delta-v=668.6829225135203 m/s
+Trial 105 [coarse] weights=(0.01, 0.001, 10.0)
+  ok; final=563409.7962879709 m; speed=722.4636672050043 m/s; delta-v=668.6829225135203 m/s
+Trial 106 [coarse] weights=(0.01, 0.001, 100.0)
+  ok; final=563409.7962879709 m; speed=722.4636672050043 m/s; delta-v=668.6829225135203 m/s
+Trial 107 [coarse] weights=(0.01, 0.001, 1000.0)
+  ok; final=563409.7962879709 m; speed=722.4636672050043 m/s; delta-v=668.6829225135203 m/s
+Trial 108 [coarse] weights=(0.01, 0.001, 10000.0)
+  ok; final=563409.7962879709 m; speed=722.4636672050043 m/s; delta-v=668.6829225135203 m/s
+Trial 109 [coarse] weights=(0.01, 0.001, 100000.0)
+  ok; final=563398.3886028258 m; speed=668.5535936218907 m/s; delta-v=641.2150023149353 m/s
+Trial 110 [coarse] weights=(0.01, 0.001, 1000000.0)
+  ok; final=563808.5239769475 m; speed=447.4325884166918 m/s; delta-v=559.8386321248366 m/s
+Trial 111 [coarse] weights=(0.01, 0.01, 0.001)
+  ok; final=563409.7962879709 m; speed=722.4636672050043 m/s; delta-v=668.6829225135203 m/s
+Trial 112 [coarse] weights=(0.01, 0.01, 0.01)
+  ok; final=563409.7962879709 m; speed=722.4636672050043 m/s; delta-v=668.6829225135203 m/s
+Trial 113 [coarse] weights=(0.01, 0.01, 0.1)
+  ok; final=563409.7962879709 m; speed=722.4636672050043 m/s; delta-v=668.6829225135203 m/s
+Trial 114 [coarse] weights=(0.01, 0.01, 1.0)
+  ok; final=563409.7962879709 m; speed=722.4636672050043 m/s; delta-v=668.6829225135203 m/s
+Trial 115 [coarse] weights=(0.01, 0.01, 10.0)
+  ok; final=563409.7962879709 m; speed=722.4636672050043 m/s; delta-v=668.6829225135203 m/s
+Trial 116 [coarse] weights=(0.01, 0.01, 100.0)
+  ok; final=563409.7962879709 m; speed=722.4636672050043 m/s; delta-v=668.6829225135203 m/s
+Trial 117 [coarse] weights=(0.01, 0.01, 1000.0)
+  ok; final=563409.7962879709 m; speed=722.4636672050043 m/s; delta-v=668.6829225135203 m/s
+Trial 118 [coarse] weights=(0.01, 0.01, 10000.0)
+  ok; final=563409.7962879709 m; speed=722.4636672050043 m/s; delta-v=668.6829225135203 m/s
+Trial 119 [coarse] weights=(0.01, 0.01, 100000.0)
+  ok; final=563398.3886028258 m; speed=668.5535936218907 m/s; delta-v=641.2150023149353 m/s
+Trial 120 [coarse] weights=(0.01, 0.01, 1000000.0)
+  ok; final=563808.5239769475 m; speed=447.4325884166918 m/s; delta-v=559.8386321248366 m/s
+Trial 121 [coarse] weights=(0.01, 0.1, 0.001)
+  ok; final=563409.7962879709 m; speed=722.4636672050043 m/s; delta-v=668.6829225135203 m/s
+Trial 122 [coarse] weights=(0.01, 0.1, 0.01)
+  ok; final=563409.7962879709 m; speed=722.4636672050043 m/s; delta-v=668.6829225135203 m/s
+Trial 123 [coarse] weights=(0.01, 0.1, 0.1)
+  ok; final=563409.7962879709 m; speed=722.4636672050043 m/s; delta-v=668.6829225135203 m/s
+Trial 124 [coarse] weights=(0.01, 0.1, 1.0)
+  ok; final=563409.7962879709 m; speed=722.4636672050043 m/s; delta-v=668.6829225135203 m/s
+Trial 125 [coarse] weights=(0.01, 0.1, 10.0)
+  ok; final=563409.7962879709 m; speed=722.4636672050043 m/s; delta-v=668.6829225135203 m/s
+Trial 126 [coarse] weights=(0.01, 0.1, 100.0)
+  ok; final=563409.7962879709 m; speed=722.4636672050043 m/s; delta-v=668.6829225135203 m/s
+Trial 127 [coarse] weights=(0.01, 0.1, 1000.0)
+  ok; final=563409.7962879709 m; speed=722.4636672050043 m/s; delta-v=668.6829225135203 m/s
+Trial 128 [coarse] weights=(0.01, 0.1, 10000.0)
+  ok; final=563409.7962879709 m; speed=722.4636672050043 m/s; delta-v=668.6829225135203 m/s
+Trial 129 [coarse] weights=(0.01, 0.1, 100000.0)
+Weight sweep failed.
+**********************
+Windows PowerShell transcript end
+End time: 20261029144213
+**********************

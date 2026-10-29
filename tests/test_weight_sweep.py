@@ -14,6 +14,39 @@ from test_celestial_body_simulator import initial_states
 
 
 class WeightSweepTests(unittest.TestCase):
+    def test_fingerprint_includes_gravitational_body_dynamics(self):
+        original = sweep.model_fingerprint()
+        with tempfile.TemporaryDirectory() as directory:
+            changed = Path(directory) / "changed_body_model.py"
+            changed.write_bytes(Path(sweep.system.__file__).read_bytes() + b"\n# changed gravity model\n")
+            with patch.object(sweep.system, "__file__", str(changed)):
+                self.assertNotEqual(sweep.model_fingerprint(), original)
+
+    def test_new_sweep_reuses_saved_ephemeris_without_fetch(self):
+        with tempfile.TemporaryDirectory() as directory:
+            config = Path(directory) / "source.json"
+            config.write_text(json.dumps(dict(epoch_utc=sweep.system.DEFAULT_EPOCH,
+                                              initial_body_states_si=initial_states().tolist())), encoding="utf-8")
+            output = Path(directory) / "new_sweep"
+            with patch("builtins.print"), patch.object(sweep.system, "get_initial_states") as fetch, \
+                 patch.object(sweep.system, "simulate_system") as simulate, \
+                 patch.object(sweep, "run_trial", side_effect=ValueError("test")):
+                sweep.run_sweep(sweep.parse_args(["--output", str(output), "--max-runs", "1",
+                                                 "--initial-states-from", str(config)]))
+            fetch.assert_not_called()
+            np.testing.assert_array_equal(simulate.call_args.args[0], initial_states())
+            saved = json.loads((output / "configuration.json").read_text())
+            self.assertEqual(saved["burn_direction"], "instantaneous Earth-relative velocity")
+            self.assertEqual(saved["invalid_burn_penalty"], "positive infinity")
+            self.assertEqual(len(saved["model_sha256"]), 64)
+
+    def test_resume_rejects_a_different_model_before_running_trials(self):
+        with patch.object(sweep, "load_checkpoint", return_value=({"model_sha256": "old"}, [])), \
+             patch.object(sweep, "run_trial") as trial:
+            with self.assertRaisesRegex(ValueError, "different or unrecorded model"):
+                sweep.run_sweep(sweep.parse_args(["--resume", "unused"]))
+            trial.assert_not_called()
+
     def test_coarse_grid_and_quarter_steps(self):
         self.assertEqual(sweep.COARSE_VALUES, (0.001, 0.01, 0.1, 1, 10, 100, 1000, 10000, 100000, 1000000))
         self.assertEqual(len(list(itertools.product(sweep.COARSE_VALUES, repeat=3))), 1000)
@@ -30,10 +63,11 @@ class WeightSweepTests(unittest.TestCase):
                 dict(status="ok", comparison_score=5)]
         self.assertIs(sweep.select_best(rows), rows[-1])
         self.assertIsNone(sweep.select_best(rows[:2]))
-        for burns in (np.array([[1, 400], [2, 300]]), np.array([[501, 300]]),
+        for burns in (np.array([[1, 400], [2, 300]]), np.array([[1000.001, 300]]),
                       np.array([[np.nan, 300]])):
             with self.assertRaises(ValueError):
                 sweep.validate_burns(burns, 600)
+        sweep.validate_burns(np.array([[1000., 100.], [-1000., 300.]]), 600)
 
     def test_dry_run_makes_no_network_or_optimizer_calls(self):
         with patch("builtins.print"), patch.object(sweep.system, "get_initial_states") as get, \

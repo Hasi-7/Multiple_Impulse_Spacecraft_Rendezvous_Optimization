@@ -18,7 +18,7 @@ def initial_states():
 
 
 class BodySimulatorTests(unittest.TestCase):
-    def test_gravity_and_momentum_balance(self):
+    def test_fixed_sun_and_gravity_on_moving_bodies(self):
         states = initial_states()
         derivative = simulator.n_body_ode(0, states.ravel()).reshape(4, 6)
         np.testing.assert_array_equal(derivative[:, :3], states[:, 3:])
@@ -28,10 +28,10 @@ class BodySimulatorTests(unittest.TestCase):
             for j in (0, 2, 3)
         )
         np.testing.assert_allclose(derivative[1, 3:], expected)
-        # Mass is proportional to mu, so pair forces should cancel.
+        np.testing.assert_array_equal(derivative[0], np.zeros(6))
+        # A fixed external source no longer conserves total system momentum.
         weighted = simulator.MU[:, None] * derivative[:, 3:]
-        np.testing.assert_allclose(weighted.sum(axis=0), 0, atol=np.abs(weighted).max() * 1e-14)
-        self.assertGreater(derivative[0, 3], 0)  # Sun is not artificially fixed.
+        self.assertGreater(np.linalg.norm(weighted.sum(axis=0)), 0)
 
     def test_horizons_headerless_csv_and_si_conversion(self):
         response = Mock(text="header\n$$SOE\n2461341., date, 1, 2, 3, 4, 5, 6,\n$$EOE\n")
@@ -53,9 +53,10 @@ class BodySimulatorTests(unittest.TestCase):
         self.assertEqual(solution.y.shape, (24, 100))
         np.testing.assert_array_equal(solution.y[:, 0], states.ravel())
         self.assertTrue(np.all(np.isfinite(solution.y)))
+        np.testing.assert_array_equal(solution.y[:6], np.zeros((6, 100)))
         self.assertGreater(np.linalg.norm(solution.y[6:9, -1] - states[1, :3]), 1e9)
-        # Earth's relative energy is perturbed by the other two bodies, but the
-        # total energy of this isolated gravitational system is conserved.
+        # The stationary Sun does no work: moving-body kinetic energy plus
+        # their mutual and fixed-Sun potential energy should be conserved.
         def energy(state):
             bodies = state.reshape(4, 6)
             kinetic = np.sum(simulator.MU * np.sum(bodies[:, 3:]**2, axis=1)) / 2
@@ -78,6 +79,11 @@ class BodySimulatorTests(unittest.TestCase):
             simulator.simulate_system(np.zeros((3, 6)), 100)
         with self.assertRaises(ValueError):
             simulator.simulate_system(initial_states(), 100, samples=1)
+        for component in (0, 3):
+            states = initial_states()
+            states[0, component] = 1
+            with self.assertRaisesRegex(ValueError, "fixed Sun"):
+                simulator.simulate_system(states, 100)
         with self.assertRaisesRegex(ValueError, "singular"):
             simulator.n_body_ode(0, np.zeros(24))
 

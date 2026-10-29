@@ -1,4 +1,4 @@
-"""Sun/Earth/Moon/Jupiter propagation, independent of the spacecraft code.
+"""Earth/Moon/Jupiter propagation with the Sun fixed at the origin.
 
 Run: python celestial_body_simulator.py
 Initial states require internet access to JPL Horizons. Integration uses SI units.
@@ -76,11 +76,11 @@ def get_initial_states(epoch=DEFAULT_EPOCH):
 
 
 def n_body_ode(t, state):
-    """Newtonian point-mass gravity between all four bodies (3D).
+    """Newtonian point-mass gravity with a physically fixed Sun (3D).
 
     State layout: [Sun x,y,z,vx,vy,vz, Earth x,y,z,vx,vy,vz, ...].
-    The Sun moves too: keeping it fixed during integration would omit its
-    acceleration due to the other bodies. Plotting subtracts its position.
+    The Sun attracts the other bodies but does not respond to their gravity.
+    This is a fixed-source approximation, not a moving heliocentric frame.
     """
     bodies = np.asarray(state).reshape(len(BODY_NAMES), 6)
     positions = bodies[:, :3]
@@ -94,14 +94,17 @@ def n_body_ode(t, state):
     derivatives = np.empty_like(bodies)
     derivatives[:, :3] = bodies[:, 3:]
     derivatives[:, 3:] = acceleration
+    derivatives[0] = 0.0  # Hold the Sun's position and velocity constant.
     return derivatives.ravel()
 
 
 def simulate_system(initial_states, duration_seconds, samples=2000):
-    """Integrate the isolated four-body system for a positive duration."""
+    """Integrate the fixed-Sun system for a positive duration."""
     states = np.asarray(initial_states, dtype=float)
     if states.shape != (4, 6) or not np.all(np.isfinite(states)):
         raise ValueError("Initial states must be a finite (4, 6) array.")
+    if np.any(states[0] != 0):
+        raise ValueError("The fixed Sun must start at the origin with zero velocity.")
     if not np.isfinite(duration_seconds) or duration_seconds <= 0:
         raise ValueError("Duration must be a positive, finite number of seconds.")
     if not isinstance(samples, (int, np.integer)) or samples < 2:
