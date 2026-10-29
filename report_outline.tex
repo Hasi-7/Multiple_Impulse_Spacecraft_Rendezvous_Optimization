@@ -124,7 +124,43 @@ Then applying ODE in Equation~\ref{eq:ODE} to the derivative of the initial stat
   \label{eq:initial_2D_state_derivative_ODE}
 \end{equation}
 \end{align*}
+Then with any final time $T$, the number of burns and the initial state of both spacecrafts defined as shown in Equation~\ref{eq:initial_2D_state}
+the rendezvous between the \textit{chaser} and \textit{target} spacecraft can be determined.
 
+For the initial state of the 3 dimensional model with more than one significant gravitational body, we can define the acceleration using the same base ODE
+from Equation~\ref{eq:ODE}, but make the following changes to the original model:
+\begin{align*}
+  \ddot{\mathbf r}&=-\mu\frac{\mathbf r}{\|\mathbf r\|^3}.
+  \begin{equation}
+    \ddot{\mathbf r}&=\sum_{i}{n}-\mu_i\frac{r_i}{\abs{r_i}^3}
+    \label{eq:3D_ODE}
+  \end{equation}
+\end{align*}
+Here, $n$ is the number of gravitational bodies being considered, and where $\mu_i$ and $r_i$ correspond to the i-th gravitational body on a 0 index.
+For my case, the gravitational bodies will be defined as follows:
+
+\[[\text{Sun}, \text{Earth}, \text{Moon}, \text{Jupiter}]\]
+
+The following gravitational parameters, $\mu$ will be used for the gravitational bodies:
+\begin{center}
+  \begin{tabular}{lc}
+    \toprule
+    Body & $\mu$ ($\mathrm{m^3\,s^{-2}}$) \\
+    \midrule
+    Sun     & $1.3271\times10^{20}$ \\
+    Earth   & $3.986\times10^{14}$ \\
+    Moon    & $4.9028\times10^{12}$ \\
+    Jupiter & $1.2671\times10^{17}$ \\
+    \bottomrule
+  \end{tabular}
+\end{center}
+
+Furthermore, we will define a successful rendezvous as follows:
+\begin{itemize}
+  \item $\text{Final Separation}<=1000 m$
+  \item $\text{Velocity Difference}<=1 ms^{-1}$
+\end{itemize}
+Final docking and approach are not within the scope of the project so this is sufficient for a successful rendezvous
 
 \prompt{Specify both initial states, units, final time $T$, number of burns,
 and allowed burn magnitudes and times. Define acceptable final separation

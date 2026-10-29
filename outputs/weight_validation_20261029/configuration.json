@@ -1,0 +1,379 @@
+{
+  "source_directory": "outputs\\weight_sweep_20261027_200627_547397",
+  "source_configuration": {
+    "epoch_utc": "2026-10-27 12:00:00",
+    "duration_s": 3600.0,
+    "number_of_burns": 2,
+    "samples_per_segment": 1000,
+    "max_runs": null,
+    "chaser_earth_relative_si": [
+      7000000.0,
+      -500000.0,
+      300000.0,
+      0.0,
+      7400.0,
+      500.0
+    ],
+    "target_earth_relative_si": [
+      7000000.0,
+      0.0,
+      0.0,
+      0.0,
+      7546.0,
+      0.0
+    ],
+    "initial_separation_m": 583095.18948453,
+    "initial_relative_speed_m_s": 520.8800245737976,
+    "coarse_values": [
+      0.001,
+      0.01,
+      0.1,
+      1.0,
+      10.0,
+      100.0,
+      1000.0,
+      10000.0,
+      100000.0,
+      1000000.0
+    ],
+    "coarse_combinations": 1000,
+    "maximum_refined_combinations_before_deduplication": 512,
+    "comparison_references_m_m_s_m_s": [
+      100.0,
+      0.1,
+      500.0
+    ],
+    "ranking": "(final_separation / position_scale)^2 + (final_relative_speed / velocity_scale)^2 + total_delta_v / fuel_scale",
+    "optimizer": "Existing rendezvous() settings, including seed 42; unchanged",
+    "notes": [
+      "Raw optimizer/trajectory costs with different weights are not comparable.",
+      "Only the best coarse tuple is refined; this is not a guarantee of globally ideal weights.",
+      "Uniform scaling of all weights is theoretically redundant; all requested tuples are still tested.",
+      "Minimum separation and surface screening use sampled positions, not continuous extrema/events.",
+      "The existing 1e12 invalid-burn penalty can be cheaper than valid high-weight costs; invalid outputs are recorded and excluded.",
+      "Total delta-v is a fuel proxy, not propellant mass. No new optimizer constraints are imposed."
+    ],
+    "initial_body_states_si": [
+      [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      [
+        123676106836.4509,
+        82518717047.76645,
+        -6197900.438908488,
+        -17006.72805060108,
+        24659.141134855792,
+        -1.526054179068481
+      ],
+      [
+        123901995387.6677,
+        82804221362.85143,
+        25736913.85562718,
+        -17864.71018492278,
+        25312.11686017358,
+        5.584687897835394
+      ],
+      [
+        -544696242047.8746,
+        579247541988.982,
+        9780652767.300129,
+        -9677.77505389911,
+        -8349.347557751433,
+        251.20635226656913
+      ]
+    ]
+  },
+  "source_trial_count": 1252,
+  "source_statuses": {
+    "ok": 552,
+    "error": 700
+  },
+  "candidates": [
+    {
+      "name": "best_overall",
+      "weights": [
+        0.05,
+        50000.0,
+        250000.0
+      ],
+      "source_result": {
+        "stage": "refined",
+        "w_position": 0.05,
+        "w_velocity": 50000.0,
+        "w_delta_v": 250000.0,
+        "status": "ok",
+        "message": "",
+        "final_separation_m": 589358.4936411936,
+        "minimum_sampled_separation_m": 527103.9752558497,
+        "minimum_time_s": 2860.0878610080936,
+        "final_relative_speed_m_s": 299.3743808847569,
+        "total_delta_v_m_s": 999.7490479319655,
+        "comparison_score": 43696847.39521293,
+        "minimum_sampled_surface_altitude_m": 315502.3706906261,
+        "optimizer_score": 22098359959.840412,
+        "trajectory_score": 22098359959.840412,
+        "burns_json": "[[499.90988671838664, 60.112943469722495], [-499.83916121357885, 1380.2635830242812]]",
+        "elapsed_s": 19.364716899995983
+      }
+    },
+    {
+      "name": "best_coarse",
+      "weights": [
+        0.01,
+        10000.0,
+        1000000.0
+      ],
+      "source_result": {
+        "stage": "coarse",
+        "w_position": 0.01,
+        "w_velocity": 10000.0,
+        "w_delta_v": 1000000.0,
+        "status": "ok",
+        "message": "",
+        "final_separation_m": 590151.3131330231,
+        "minimum_sampled_separation_m": 527041.6751164392,
+        "minimum_time_s": 2859.104233797515,
+        "final_relative_speed_m_s": 298.57023411434454,
+        "total_delta_v_m_s": 998.9187397044839,
+        "comparison_score": 43742277.707010075,
+        "minimum_sampled_surface_altitude_m": 315278.062414079,
+        "optimizer_score": 5373146310.621744,
+        "trajectory_score": 5373146310.621744,
+        "burns_json": "[[499.17598394915683, 60.61372658885364], [-499.74275575532704, 1383.9674537835854]]",
+        "elapsed_s": 14.778041799996572
+      }
+    },
+    {
+      "name": "best_position",
+      "weights": [
+        0.05,
+        5000.0,
+        250000.0
+      ],
+      "source_result": {
+        "stage": "refined",
+        "w_position": 0.05,
+        "w_velocity": 5000.0,
+        "w_delta_v": 250000.0,
+        "status": "ok",
+        "message": "",
+        "final_separation_m": 586014.3246346323,
+        "minimum_sampled_separation_m": 537186.154223546,
+        "minimum_time_s": 2865.681898996902,
+        "final_relative_speed_m_s": 316.21227229358186,
+        "total_delta_v_m_s": 999.8237354213053,
+        "comparison_score": 44340300.982252926,
+        "minimum_sampled_surface_altitude_m": 315503.70813471917,
+        "optimizer_score": 17920546373.44989,
+        "trajectory_score": 17920546373.44989,
+        "burns_json": "[[499.8753349134639, 60.033311170571324], [-499.94840050784137, 1363.4640765180034]]",
+        "elapsed_s": 21.73757860000478
+      }
+    },
+    {
+      "name": "best_velocity",
+      "weights": [
+        0.001,
+        100000.0,
+        1000000.0
+      ],
+      "source_result": {
+        "stage": "coarse",
+        "w_position": 0.001,
+        "w_velocity": 100000.0,
+        "w_delta_v": 1000000.0,
+        "status": "ok",
+        "message": "",
+        "final_separation_m": 1008913.6857482101,
+        "minimum_sampled_separation_m": 583095.18948453,
+        "minimum_time_s": 0.0,
+        "final_relative_speed_m_s": 143.28084416105204,
+        "total_delta_v_m_s": 704.0113976462071,
+        "comparison_score": 103843623.96737696,
+        "minimum_sampled_surface_altitude_m": 182846.28909839224,
+        "optimizer_score": 3774858253.2866135,
+        "trajectory_score": 3774858253.2866135,
+        "burns_json": "[[204.02477856392983, 60.13645907199893], [-499.98661908227723, 3539.172193337511]]",
+        "elapsed_s": 15.466542299996945
+      }
+    }
+  ],
+  "scenarios": [
+    {
+      "name": "original_control",
+      "chaser": [
+        7000000.0,
+        -500000.0,
+        300000.0,
+        0.0,
+        7400.0,
+        500.0
+      ],
+      "target": [
+        7000000.0,
+        0.0,
+        0.0,
+        0.0,
+        7546.0,
+        0.0
+      ]
+    },
+    {
+      "name": "near_along_track_100m",
+      "chaser": [
+        7000000.0,
+        -100.0,
+        0.0,
+        0.0,
+        7546.0,
+        0.0
+      ],
+      "target": [
+        7000000.0,
+        0.0,
+        0.0,
+        0.0,
+        7546.0,
+        0.0
+      ]
+    },
+    {
+      "name": "along_track_1km",
+      "chaser": [
+        7000000.0,
+        -1000.0,
+        0.0,
+        0.0,
+        7546.0,
+        0.0
+      ],
+      "target": [
+        7000000.0,
+        0.0,
+        0.0,
+        0.0,
+        7546.0,
+        0.0
+      ]
+    },
+    {
+      "name": "along_track_10km_velocity_error",
+      "chaser": [
+        7000000.0,
+        -10000.0,
+        0.0,
+        0.0,
+        7541.0,
+        0.0
+      ],
+      "target": [
+        7000000.0,
+        0.0,
+        0.0,
+        0.0,
+        7546.0,
+        0.0
+      ]
+    },
+    {
+      "name": "radial_10km_velocity_error",
+      "chaser": [
+        7010000.0,
+        0.0,
+        0.0,
+        0.0,
+        7541.0,
+        0.0
+      ],
+      "target": [
+        7000000.0,
+        0.0,
+        0.0,
+        0.0,
+        7546.0,
+        0.0
+      ]
+    },
+    {
+      "name": "cross_track_10km",
+      "chaser": [
+        7000000.0,
+        0.0,
+        10000.0,
+        0.0,
+        7546.0,
+        10.0
+      ],
+      "target": [
+        7000000.0,
+        0.0,
+        0.0,
+        0.0,
+        7546.0,
+        0.0
+      ]
+    },
+    {
+      "name": "mixed_100km",
+      "chaser": [
+        7020000.0,
+        -100000.0,
+        30000.0,
+        10.0,
+        7526.0,
+        30.0
+      ],
+      "target": [
+        7000000.0,
+        0.0,
+        0.0,
+        0.0,
+        7546.0,
+        0.0
+      ]
+    },
+    {
+      "name": "higher_orbit_8000km",
+      "chaser": [
+        8000000.0,
+        -10000.0,
+        2000.0,
+        0.0,
+        7053.68259663232,
+        2.0
+      ],
+      "target": [
+        8000000.0,
+        0.0,
+        0.0,
+        0.0,
+        7058.68259663232,
+        0.0
+      ]
+    },
+    {
+      "name": "inclined_target_20deg",
+      "chaser": [
+        7000000.0,
+        -10000.0,
+        2000.0,
+        0.0,
+        7085.966663031941,
+        2582.9007975175664
+      ],
+      "target": [
+        7000000.0,
+        0.0,
+        0.0,
+        0.0,
+        7090.966663031941,
+        2580.9007975175664
+      ]
+    }
+  ]
+}
