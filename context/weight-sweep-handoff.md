@@ -1,5 +1,39 @@
 # Weight sweep and validation report handoff
 
+## Current analysis after removing the initial proximity case
+The user requested excluding the 100 m initial-offset case because its no-burn
+control already met the success criterion. Original validation artifacts are
+preserved in `original_validation_including_100m_20261031_001251.zip` inside the
+current validation directory. Its active configuration, CSV/JSON, report, figures,
+numerical checks and Appendix C now retain eight cases and 32 powered attempts.
+All retained numerical records are unchanged; source weights were not retuned.
+Overall weights pass two of seven new cases; each other selection passes zero.
+No optimization rerun was needed. Historical nine-case/36-attempt statements
+below refer to the archived original batch. Future validation also uses eight cases.
+
+## Latest fixed-Sun +/-1000 experiment is complete
+
+Verified from the saved files for run `20261029_144240`: all 1,312 sweep trials
+completed (1,000 coarse, 312 additional refined), all 36 powered validation trials
+completed, and nine coast controls are saved. All powered rows have status `ok`.
+The launcher status is `completed` and validation report says `Complete: True`.
+No duplicate production run was launched.
+
+Overall weights (0.0075, 5000, 2.5) pass the project criterion in 3/8 new states;
+coarse and velocity selections each pass 1/8 and position passes 0/8. The 100 m
+case already passes under coast. The other overall passes are the 1 km and 10 km
+along-track cases. Five new-state weight/state pairs pass in total.
+
+All 28 code checks passed. Independent tighter-tolerance fixed-schedule replays
+preserve the pass/fail classifications for all 36 trials. The five production
+passes also pass at rtol=1e-12 with atol=1e-8. These are replays, not reoptimization.
+Evidence/figures: `outputs/weight_validation_fixed_sun_20261029_144240/report_checks.json`,
+`report_validation.png`, `report_success_history.png`; runner `verify_report_results.py`.
+
+Report Sections 4 and 5 are written and the 12-page PDF is compiled and checked
+in both root and `out`. Discussion and Conclusion are unchanged for the user.
+Completed outputs and these report changes have not yet been committed/pushed.
+
 ## Fixed-Sun model supersedes the moving-Sun rerun
 
 The user requested a physically fixed Sun on 2026-10-29. Sun position and

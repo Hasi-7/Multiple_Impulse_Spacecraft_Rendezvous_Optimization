@@ -1,0 +1,10 @@
+# Follow-up validation already complete; report Sections 4 and 5
+
+- User asked to run the tests after the 1000+ sweep. Inspected processes and saved data first: the automatic launcher had already completed both stages. No duplicate batch was launched.
+- Verified sweep completion with 1312/1312 ok trials (1000 coarse + 312 refined), 36/36 ok powered validation rows, nine coast controls, and completed status/report. Current model fingerprint matches saved configuration exactly.
+- Re-ran all 28 unit tests successfully. Added `verify_report_results.py` to produce reproducible numerical checks and two figures from the existing results without new optimization.
+- Circular Earth-only orbit, radius 7e6 m, one 5828.52 s period: maximum analytical position discrepancy 18.94 m, terminal discrepancy 15.97 m, maximum relative energy/angular-momentum drifts 2.12e-6 / 1.06e-6.
+- Independently replayed all 36 burn schedules with body and spacecraft rtol=1e-10, atol=1e-8. Pass/fail classifications unchanged. Rechecked all five production passes at rtol=1e-12; all remain above sampled body surfaces and meet the project criterion. Tight-to-tighter differences are below 0.004 m and 5e-6 m/s. The overall 1 km case's terminal separation shifts from 16.0 m production to 74.6 m tighter propagation; report makes this explicit.
+- Filled only Simulation Checks and Experiments and Results, adding the required graphicx package. Preserved earlier prose and all Discussion/Conclusion content by exact comparison with HEAD. Added a page break before Discussion to keep both result figures ahead of it.
+- Built `out/report_outline.pdf` using latexmk with SyncTeX, visually inspected the affected pages, and synchronized the root PDF. Twelve pages; no undefined-reference or box warnings. Existing experiment raw results remain unchanged.
+- Current completed result artifacts, figures, verification script and new report sections are not committed or pushed in this turn. The previous commit is still the in-progress checkpoint.

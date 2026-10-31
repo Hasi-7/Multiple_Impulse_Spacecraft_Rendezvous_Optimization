@@ -14,10 +14,11 @@ class ValidationTests(unittest.TestCase):
         metadata = dict(chaser_earth_relative_si=sweep.CHASER_STATE.tolist(),
                         target_earth_relative_si=sweep.TARGET_STATE.tolist())
         cases = validation.scenarios(metadata)
-        self.assertEqual(len(cases), 9)
-        self.assertEqual(len({c['name'] for c in cases}), 9)
+        self.assertEqual(len(cases), 8)
+        self.assertEqual(len({c['name'] for c in cases}), 8)
         self.assertEqual(cases[0]['chaser'], metadata['chaser_earth_relative_si'])
-        self.assertEqual(cases[1]['chaser'][1], -100)
+        self.assertEqual(cases[1]['chaser'][1], -1000)
+        self.assertNotIn('near_along_track_100m', {c['name'] for c in cases})
         self.assertEqual(cases[-2]['target'][0], 8e6)
         self.assertGreater(cases[-1]['target'][5], 0)
         for case in cases:

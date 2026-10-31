@@ -1,9 +1,11 @@
-﻿{
-    "sweep":  "outputs/weight_sweep_fixed_sun_20261029_144240",
-    "message":  "Running 1000 coarse combinations followed by refinement",
-    "stage":  "sweep",
-    "log":  "outputs/corrected_experiments_20261029_144240.log",
-    "updated_utc":  "2026-10-29T18:42:43.3387745Z",
-    "terminal_pid":  31880,
-    "validation":  "outputs/weight_validation_fixed_sun_20261029_144240"
+{
+  "sweep": "outputs/weight_sweep_fixed_sun_20261029_144240",
+  "message": "Experiment completed. Reported analysis retains 32 of the original 36 powered trials and eight controls after excluding the initially successful 100 m case; original records archived.",
+  "stage": "completed",
+  "log": "outputs/corrected_experiments_20261029_144240.log",
+  "updated_utc": "2026-10-30T00:15:04.6563256Z",
+  "terminal_pid": 31880,
+  "validation": "outputs/weight_validation_fixed_sun_20261029_144240",
+  "analysis_retained_trials": 32,
+  "analysis_retained_controls": 8
 }

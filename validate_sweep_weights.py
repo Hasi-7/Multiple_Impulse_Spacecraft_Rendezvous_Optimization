@@ -39,7 +39,6 @@ def scenarios(metadata):
     result = [dict(name='original_control',
                    chaser=metadata['chaser_earth_relative_si'], target=target.tolist())]
     for name, offset in [
-        ('near_along_track_100m', [0, -100, 0, 0, 0, 0]),
         ('along_track_1km', [0, -1000, 0, 0, 0, 0]),
         ('along_track_10km_velocity_error', [0, -10000, 0, 0, -5, 0]),
         ('radial_10km_velocity_error', [10000, 0, 0, 0, -5, 0]),
@@ -97,6 +96,8 @@ def write_report(output, configuration, trials, coasts, complete):
              'Same saved body ephemeris, four-body dynamics, optimizer defaults and seed 42.',
              'Each candidate is reoptimized for each initial state. Burn sequences are NOT reused.',
              'Candidates were frozen from the original sweep; no new sweep or validation-state tuning.',
+             f'Retained dataset: {len(configuration["scenarios"])} initial-state cases; {len(trials)} saved powered trials.',
+             'The initial 100 m proximity case is excluded from this analysis because it already met the success criterion without burns.',
              'Strict rendezvous: final separation <= 100 m AND relative speed <= 0.1 m/s, surface-safe.',
              'Project rendezvous criterion (also labelled loose below): <= 1000 m AND <= 1 m/s, surface-safe.',
              'The strict criterion is a secondary diagnostic. A close flyby alone is not rendezvous.',
@@ -163,8 +164,8 @@ def write_report(output, configuration, trials, coasts, complete):
               ('- Invalid burn sequences receive positive infinity.'
                if m.get('invalid_burn_penalty') == 'positive infinity'
                else '- Historical invalid-order penalty is 1e12; valid high-weight costs can exceed it.'),
-              '- Existing DOP853 rtol=1e-6 and large Sun-frame coordinates are unchanged. No independent',
-              '  tighter-tolerance verification was performed; these are model-level results, not flight validation.',
+              '- Original DOP853 rtol=1e-6 and coordinate scales are unchanged. Additional numerical checks,',
+              '  if performed, are recorded separately in report_checks.json; these are not flight-validated results.',
               '- Minimum distances and surface checks are sampled; no continuous collision guarantee.',
               '- No atmosphere, thrust duration, navigation error or collision avoidance constraints.',
               '- Failure cannot isolate weight quality from control restrictions, optimizer convergence or numerics.',

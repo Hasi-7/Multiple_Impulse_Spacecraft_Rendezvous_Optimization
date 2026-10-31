@@ -1,0 +1,302 @@
+WEIGHT SWEEP: INITIAL-STATE GENERALIZATION TEST
+============================================================
+Run directory: outputs\weight_validation_fixed_sun_20261029_144240
+Complete: True
+Source sweep: outputs\weight_sweep_fixed_sun_20261029_144240
+Source trials: 1312; statuses: {'ok': 1312}
+
+METHOD AND SUCCESS CRITERIA
+Epoch: 2026-10-27 12:00:00 UTC; duration: 3600.0 s; burns: 2.
+Gravitational model: Sun fixed at origin; Earth, Moon and Jupiter moving
+Samples per powered segment: 1000; coast: 3000 samples.
+Same saved body ephemeris, four-body dynamics, optimizer defaults and seed 42.
+Each candidate is reoptimized for each initial state. Burn sequences are NOT reused.
+Candidates were frozen from the original sweep; no new sweep or validation-state tuning.
+Retained dataset: 8 initial-state cases; 32 saved powered trials.
+The initial 100 m proximity case is excluded from this analysis because it already met the success criterion without burns.
+Strict rendezvous: final separation <= 100 m AND relative speed <= 0.1 m/s, surface-safe.
+Project rendezvous criterion (also labelled loose below): <= 1000 m AND <= 1 m/s, surface-safe.
+The strict criterion is a secondary diagnostic. A close flyby alone is not rendezvous.
+Comparison score uses the saved fixed scales; raw weighted costs are not cross-comparable.
+
+WEIGHTS (position, velocity, delta-v) AND ORIGINAL SWEEP RESULTS
+best_overall: [0.0075, 5000.0, 2.5]; original final=563497.511508 m, speed=134.361880 m/s, dv=1884.999668 m/s
+best_coarse: [0.001, 10000.0, 10.0]; original final=563768.674041 m, speed=133.946718 m/s, dv=1898.361137 m/s
+best_position: [1.0, 0.1, 1.0]; original final=563393.397714 m, speed=390.532377 m/s, dv=1222.827647 m/s
+best_velocity: [0.005, 75000.0, 2.5]; original final=564486.809599 m, speed=133.904890 m/s, dv=1662.790770 m/s
+
+INITIAL STATES
+Earth-relative [x,y,z,vx,vy,vz], SI units, J2000 ecliptic-aligned.
+original_control
+  chaser: [7000000.0, -500000.0, 300000.0, 0.0, 7400.0, 500.0]
+  target: [7000000.0, 0.0, 0.0, 0.0, 7546.0, 0.0]
+along_track_1km
+  chaser: [7000000.0, -1000.0, 0.0, 0.0, 7546.0, 0.0]
+  target: [7000000.0, 0.0, 0.0, 0.0, 7546.0, 0.0]
+along_track_10km_velocity_error
+  chaser: [7000000.0, -10000.0, 0.0, 0.0, 7541.0, 0.0]
+  target: [7000000.0, 0.0, 0.0, 0.0, 7546.0, 0.0]
+radial_10km_velocity_error
+  chaser: [7010000.0, 0.0, 0.0, 0.0, 7541.0, 0.0]
+  target: [7000000.0, 0.0, 0.0, 0.0, 7546.0, 0.0]
+cross_track_10km
+  chaser: [7000000.0, 0.0, 10000.0, 0.0, 7546.0, 10.0]
+  target: [7000000.0, 0.0, 0.0, 0.0, 7546.0, 0.0]
+mixed_100km
+  chaser: [7020000.0, -100000.0, 30000.0, 10.0, 7526.0, 30.0]
+  target: [7000000.0, 0.0, 0.0, 0.0, 7546.0, 0.0]
+higher_orbit_8000km
+  chaser: [8000000.0, -10000.0, 2000.0, 0.0, 7053.68259663232, 2.0]
+  target: [8000000.0, 0.0, 0.0, 0.0, 7058.68259663232, 0.0]
+inclined_target_20deg
+  chaser: [7000000.0, -10000.0, 2000.0, 0.0, 7085.966663031941, 2582.9007975175664]
+  target: [7000000.0, 0.0, 0.0, 0.0, 7090.966663031941, 2580.9007975175664]
+
+ALL EXPERIMENTS
+Separation is at mission end unless explicitly marked minimum.
+
+original_control
+  COAST: final=2493544.030997 m; speed=2114.989996 m/s; min=583553.943775 m; min altitude=-64134.301 m; status=surface_intersection
+  best_overall: ok; strict rendezvous=False
+    final=563497.511508 m; speed=134.361880 m/s; delta-v=1884.999668 m/s; score=33558259.787796
+    minimum separation=24378.861892 m at 2345.864253 s; minimum surface altitude=536916.598 m
+    burns [signed delta-v m/s, time s]: [[984.3012526381399, 61.66601837406097], [-900.6984151315193, 354.19271755962336]]
+    elapsed=21.851 s
+    vs coast: final separation change=-1930046.519489 m; speed change=-1980.628117 m/s (negative means improvement)
+  best_coarse: ok; strict rendezvous=False
+    final=563768.674041 m; speed=133.946718 m/s; delta-v=1898.361137 m/s; score=33577687.914659
+    minimum separation=29397.714038 m at 2346.028768 s; minimum surface altitude=537056.007 m
+    burns [signed delta-v m/s, time s]: [[990.9725756308692, 62.32451720382255], [-907.3885617819146, 354.61849647575514]]
+    elapsed=16.822 s
+    vs coast: final separation change=-1929775.356957 m; speed change=-1981.043278 m/s (negative means improvement)
+  best_position: ok; strict rendezvous=False
+    final=563393.397714 m; speed=390.532377 m/s; delta-v=1222.827647 m/s; score=46992768.244562
+    minimum separation=404349.761802 m at 2711.820000 s; minimum surface altitude=255256.822 m
+    burns [signed delta-v m/s, time s]: [[594.7330824130675, 501.9869917853804], [-628.0945642858761, 1182.3111178705537]]
+    elapsed=14.423 s
+    vs coast: final separation change=-1930150.633284 m; speed change=-1724.457620 m/s (negative means improvement)
+  best_velocity: ok; strict rendezvous=False
+    final=564486.809599 m; speed=133.904890 m/s; delta-v=1662.790770 m/s; score=33657591.091304
+    minimum separation=27007.815913 m at 2345.162241 s; minimum surface altitude=526809.643 m
+    burns [signed delta-v m/s, time s]: [[871.8071791884174, 62.15741103419646], [-790.9835910733143, 402.08438348857385]]
+    elapsed=16.844 s
+    vs coast: final separation change=-1929057.221398 m; speed change=-1981.085107 m/s (negative means improvement)
+
+along_track_1km
+  COAST: final=2568.399421 m; speed=2.010527 m/s; min=815.987759 m; min altitude=627884.489 m; status=ok
+  best_overall: ok; strict rendezvous=True
+    final=16.013251 m; speed=0.036592 m/s; delta-v=6.300442 m/s; score=0.172144
+    minimum separation=4.232465 m at 2905.751931 s; minimum surface altitude=628576.711 m
+    burns [signed delta-v m/s, time s]: [[3.1270728454504404, 60.01448753487034], [-3.1733690099414735, 216.810631762178]]
+    elapsed=62.003 s
+    vs coast: final separation change=-2552.386170 m; speed change=-1.973934 m/s (negative means improvement)
+  best_coarse: ok; strict rendezvous=False
+    final=1339.364978 m; speed=0.033195 m/s; delta-v=1.237178 m/s; score=179.502518
+    minimum separation=657.193332 m at 798.444512 s; minimum surface altitude=627971.725 m
+    burns [signed delta-v m/s, time s]: [[0.14725767761780695, 60.134234994823146], [1.0899200034930612, 3539.2472847131257]]
+    elapsed=26.756 s
+    vs coast: final separation change=-1229.034444 m; speed change=-1.977332 m/s (negative means improvement)
+  best_position: ok; strict rendezvous=False
+    final=0.188274 m; speed=11.829047 m/s; delta-v=10.853065 m/s; score=13992.657893
+    minimum separation=0.188274 m at 3600.000000 s; minimum surface altitude=627884.490 m
+    burns [signed delta-v m/s, time s]: [[-10.8393856733342, 3360.623592286328], [0.01367915876171466, 3502.9419757337155]]
+    elapsed=28.417 s
+    vs coast: final separation change=-2568.211148 m; speed change=+9.818521 m/s (negative means improvement)
+  best_velocity: ok; strict rendezvous=False
+    final=1342.174880 m; speed=0.021371 m/s; delta-v=1.249521 m/s; score=180.191512
+    minimum separation=657.067976 m at 795.447748 s; minimum surface altitude=627970.887 m
+    burns [signed delta-v m/s, time s]: [[0.14671126792942246, 60.739191815099275], [1.102810071829774, 3539.2882303745428]]
+    elapsed=24.569 s
+    vs coast: final separation change=-1226.224541 m; speed change=-1.989155 m/s (negative means improvement)
+
+along_track_10km_velocity_error
+  COAST: final=91559.957511 m; speed=83.754038 m/s; min=10005.993637 m; min altitude=605938.637 m; status=ok
+  best_overall: ok; strict rendezvous=False
+    final=149.497742 m; speed=0.251101 m/s; delta-v=101.496272 m/s; score=8.743133
+    minimum separation=149.497742 m at 3600.000000 s; minimum surface altitude=627381.787 m
+    burns [signed delta-v m/s, time s]: [[53.03934798187227, 60.003386072036164], [-48.45692359988729, 165.88883618768932]]
+    elapsed=32.013 s
+    vs coast: final separation change=-91410.459768 m; speed change=-83.502937 m/s (negative means improvement)
+  best_coarse: ok; strict rendezvous=False
+    final=14246.394346 m; speed=0.357422 m/s; delta-v=18.224680 m/s; score=20308.786651
+    minimum separation=7439.083134 m at 801.850126 s; minimum surface altitude=620729.071 m
+    burns [signed delta-v m/s, time s]: [[6.5561274799940765, 60.14088441604582], [11.668552203646554, 3538.8616916202477]]
+    elapsed=18.570 s
+    vs coast: final separation change=-77313.563165 m; speed change=-83.396616 m/s (negative means improvement)
+  best_position: ok; strict rendezvous=False
+    final=0.914779 m; speed=129.887505 m/s; delta-v=127.853834 m/s; score=1687076.644320
+    minimum separation=0.914779 m at 3600.000000 s; minimum surface altitude=607381.956 m
+    burns [signed delta-v m/s, time s]: [[16.693623551421013, 1658.2683911074782], [-111.1602099616934, 3034.338066443633]]
+    elapsed=179.335 s
+    vs coast: final separation change=-91559.042732 m; speed change=+46.133467 m/s (negative means improvement)
+  best_velocity: ok; strict rendezvous=False
+    final=14255.822934 m; speed=0.338182 m/s; delta-v=18.114680 m/s; score=20334.321701
+    minimum separation=7441.313441 m at 801.821864 s; minimum surface altitude=620725.822 m
+    burns [signed delta-v m/s, time s]: [[6.552696277933867, 60.134905861679954], [11.561983663545439, 3538.751203660988]]
+    elapsed=20.823 s
+    vs coast: final separation change=-77304.134577 m; speed change=-83.415856 m/s (negative means improvement)
+
+radial_10km_velocity_error
+  COAST: final=64244.592829 m; speed=67.885842 m/s; min=10000.018510 m; min altitude=628713.357 m; status=ok
+  best_overall: ok; strict rendezvous=False
+    final=2871.060216 m; speed=5.224432 m/s; delta-v=372.006071 m/s; score=3554.511281
+    minimum separation=2795.498817 m at 3472.916654 s; minimum surface altitude=623930.105 m
+    burns [signed delta-v m/s, time s]: [[-188.09431023932777, 62.86434813054734], [183.91176026740186, 73.43714614787655]]
+    elapsed=23.832 s
+    vs coast: final separation change=-61373.532614 m; speed change=-62.661410 m/s (negative means improvement)
+  best_coarse: ok; strict rendezvous=False
+    final=6424.564675 m; speed=0.231339 m/s; delta-v=12.671816 m/s; score=4132.880250
+    minimum separation=6424.564675 m at 3600.000000 s; minimum surface altitude=621381.457 m
+    burns [signed delta-v m/s, time s]: [[-5.122993870037007, 60.07046067188571], [-7.548821836560582, 3312.870796280793]]
+    elapsed=20.372 s
+    vs coast: final separation change=-57820.028154 m; speed change=-67.654503 m/s (negative means improvement)
+  best_position: ok; strict rendezvous=False
+    final=1.351512 m; speed=83.898755 m/s; delta-v=78.643682 m/s; score=703900.259033
+    minimum separation=1.351512 m at 3600.000000 s; minimum surface altitude=617210.965 m
+    burns [signed delta-v m/s, time s]: [[-11.52038832596003, 1582.9366692573994], [67.12329357262826, 3037.037674266599]]
+    elapsed=197.872 s
+    vs coast: final separation change=-64243.241318 m; speed change=+16.012913 m/s (negative means improvement)
+  best_velocity: ok; strict rendezvous=False
+    final=6446.498606 m; speed=0.181452 m/s; delta-v=12.709230 m/s; score=4159.052333
+    minimum separation=6446.498606 m at 3600.000000 s; minimum surface altitude=621409.072 m
+    burns [signed delta-v m/s, time s]: [[-5.115664877013315, 60.14367328474441], [-7.5935646711998706, 3298.6260763776318]]
+    elapsed=23.737 s
+    vs coast: final separation change=-57798.094223 m; speed change=-67.704390 m/s (negative means improvement)
+
+cross_track_10km
+  COAST: final=13642.328004 m; speed=0.289218 m/s; min=75.659793 m; min altitude=628713.357 m; status=ok
+  best_overall: ok; strict rendezvous=False
+    final=13639.754101 m; speed=0.339689 m/s; delta-v=18.890341 m/s; score=18615.865808
+    minimum separation=75.644168 m at 2150.033543 s; minimum surface altitude=628713.363 m
+    burns [signed delta-v m/s, time s]: [[9.323673810207378, 2705.1429594247024], [-9.5666674654723, 2726.2988287744956]]
+    elapsed=11.465 s
+    vs coast: final separation change=-2.573903 m; speed change=+0.050471 m/s (negative means improvement)
+  best_coarse: ok; strict rendezvous=False
+    final=13644.653742 m; speed=0.128458 m/s; delta-v=2.597837 m/s; score=18619.312926
+    minimum separation=75.256688 m at 2150.724407 s; minimum surface altitude=628713.357 m
+    burns [signed delta-v m/s, time s]: [[1.3285004533063471, 3060.6462721984653], [-1.2693365085757469, 3173.9050891423976]]
+    elapsed=16.892 s
+    vs coast: final separation change=+2.325737 m; speed change=-0.160759 m/s (negative means improvement)
+  best_position: ok; strict rendezvous=False
+    final=13640.143334 m; speed=5.224552 m/s; delta-v=338.289988 m/s; score=21335.621502
+    minimum separation=76.219514 m at 2151.396979 s; minimum surface altitude=628713.376 m
+    burns [signed delta-v m/s, time s]: [[-166.6414497911446, 3529.138887387804], [171.64853797206825, 3532.8107965898225]]
+    elapsed=10.267 s
+    vs coast: final separation change=-2.184670 m; speed change=+4.935334 m/s (negative means improvement)
+  best_velocity: ok; strict rendezvous=False
+    final=13640.070430 m; speed=0.130261 m/s; delta-v=2.476941 m/s; score=18606.853881
+    minimum separation=56.514181 m at 2151.593475 s; minimum surface altitude=628713.362 m
+    burns [signed delta-v m/s, time s]: [[1.2518135128372077, 1695.1644744430077], [-1.2251274570935777, 1711.0207326669743]]
+    elapsed=15.163 s
+    vs coast: final separation change=-2.257574 m; speed change=-0.158957 m/s (negative means improvement)
+
+mixed_100km
+  COAST: final=219999.840908 m; speed=152.028363 m/s; min=85783.428346 m; min altitude=541613.337 m; status=ok
+  best_overall: ok; strict rendezvous=False
+    final=41209.671972 m; speed=3.272266 m/s; delta-v=151.450840 m/s; score=170894.781471
+    minimum separation=13288.729920 m at 2243.269351 s; minimum surface altitude=611465.887 m
+    burns [signed delta-v m/s, time s]: [[72.08577702177776, 81.40395576989567], [-79.36506317124092, 659.9264245357188]]
+    elapsed=21.329 s
+    vs coast: final separation change=-178790.168936 m; speed change=-148.756097 m/s (negative means improvement)
+  best_coarse: ok; strict rendezvous=False
+    final=122184.226623 m; speed=5.457583 m/s; delta-v=93.964705 m/s; score=1495877.232167
+    minimum separation=73825.987083 m at 1223.690884 s; minimum surface altitude=562298.959 m
+    burns [signed delta-v m/s, time s]: [[11.273162539066517, 60.503021356222234], [82.69154248821931, 3539.6188130891696]]
+    elapsed=14.033 s
+    vs coast: final separation change=-97815.614286 m; speed change=-146.570780 m/s (negative means improvement)
+  best_position: ok; strict rendezvous=False
+    final=41171.615808 m; speed=942.430255 m/s; delta-v=984.541108 m/s; score=88986990.803054
+    minimum separation=41171.615808 m at 3600.000000 s; minimum surface altitude=541613.411 m
+    burns [signed delta-v m/s, time s]: [[59.0193164229599, 3118.1313633149693], [-925.5217918312678, 3334.4739602430823]]
+    elapsed=15.154 s
+    vs coast: final separation change=-178828.225100 m; speed change=+790.401893 m/s (negative means improvement)
+  best_velocity: ok; strict rendezvous=False
+    final=123129.685464 m; speed=3.085398 m/s; delta-v=94.292184 m/s; score=1517044.101073
+    minimum separation=74039.037404 m at 1220.587088 s; minimum surface altitude=561992.665 m
+    burns [signed delta-v m/s, time s]: [[11.092147604719216, 61.0299248660931], [83.20003624085825, 3539.701412940295]]
+    elapsed=15.981 s
+    vs coast: final separation change=-96870.155445 m; speed change=-148.942964 m/s (negative means improvement)
+
+higher_orbit_8000km
+  COAST: final=88090.623949 m; speed=67.723223 m/s; min=10204.389664 m; min altitude=1602625.229 m; status=ok
+  best_overall: ok; strict rendezvous=False
+    final=2086.613553 m; speed=1.971797 m/s; delta-v=34.990709 m/s; score=824.263782
+    minimum separation=472.031839 m at 2670.307142 s; minimum surface altitude=1626833.483 m
+    burns [signed delta-v m/s, time s]: [[19.74387269286271, 61.065666006377796], [-15.246836087183357, 419.30422982460686]]
+    elapsed=30.301 s
+    vs coast: final separation change=-86004.010396 m; speed change=-65.751426 m/s (negative means improvement)
+  best_coarse: ok; strict rendezvous=False
+    final=2163.645615 m; speed=1.940677 m/s; delta-v=39.662190 m/s; score=844.838408
+    minimum separation=823.313539 m at 2670.765010 s; minimum surface altitude=1627039.830 m
+    burns [signed delta-v m/s, time s]: [[22.058904103211987, 61.18914463962233], [-17.60328575413439, 376.71612768862224]]
+    elapsed=29.739 s
+    vs coast: final separation change=-85926.978333 m; speed change=-65.782546 m/s (negative means improvement)
+  best_position: ok; strict rendezvous=False
+    final=2080.819214 m; speed=721.356889 m/s; delta-v=1221.155966 m/s; score=52036011.566841
+    minimum separation=2080.819214 m at 3600.000000 s; minimum surface altitude=1602636.064 m
+    burns [signed delta-v m/s, time s]: [[258.09303770182134, 3067.133767854806], [-963.0629281623055, 3383.931507808311]]
+    elapsed=17.870 s
+    vs coast: final separation change=-86009.804734 m; speed change=+653.633666 m/s (negative means improvement)
+  best_velocity: ok; strict rendezvous=False
+    final=2126.341896 m; speed=1.939305 m/s; delta-v=155.289545 m/s; score=828.533785
+    minimum separation=851.792493 m at 2619.307170 s; minimum surface altitude=1627359.760 m
+    burns [signed delta-v m/s, time s]: [[79.9368837449006, 135.1698321473998], [-75.35266169491672, 209.99260664282633]]
+    elapsed=23.245 s
+    vs coast: final separation change=-85964.282052 m; speed change=-65.783918 m/s (negative means improvement)
+
+inclined_target_20deg
+  COAST: final=75387.384349 m; speed=68.470385 m/s; min=10204.386832 m; min altitude=610145.676 m; status=ok
+  best_overall: ok; strict rendezvous=False
+    final=6166.397833 m; speed=1.215929 m/s; delta-v=758.701140 m/s; score=3951.811838
+    minimum separation=888.819098 m at 1998.605582 s; minimum surface altitude=627740.609 m
+    burns [signed delta-v m/s, time s]: [[381.16482305484254, 117.03296128627744], [-377.53631652088535, 129.73313758484437]]
+    elapsed=21.014 s
+    vs coast: final separation change=-69220.986516 m; speed change=-67.254456 m/s (negative means improvement)
+  best_coarse: ok; strict rendezvous=False
+    final=6271.173711 m; speed=1.211046 m/s; delta-v=32.050041 m/s; score=4079.489371
+    minimum separation=132.909547 m at 1981.222292 s; minimum surface altitude=626807.028 m
+    burns [signed delta-v m/s, time s]: [[17.71413126528598, 64.01382019155494], [-14.335909747833607, 410.33741632511624]]
+    elapsed=26.231 s
+    vs coast: final separation change=-69116.210638 m; speed change=-67.259339 m/s (negative means improvement)
+  best_position: ok; strict rendezvous=False
+    final=6163.914525 m; speed=417.145842 m/s; delta-v=843.021418 m/s; score=17404866.442018
+    minimum separation=6163.914525 m at 3600.000000 s; minimum surface altitude=610145.689 m
+    burns [signed delta-v m/s, time s]: [[225.6791246775298, 3079.701752695283], [-617.3422936270518, 3308.08841345118]]
+    elapsed=26.532 s
+    vs coast: final separation change=-69223.469824 m; speed change=+348.675457 m/s (negative means improvement)
+  best_velocity: ok; strict rendezvous=False
+    final=13868.669735 m; speed=1.210965 m/s; delta-v=15.416421 m/s; score=19380.674434
+    minimum separation=8793.502395 m at 888.545171 s; minimum surface altitude=621810.396 m
+    burns [signed delta-v m/s, time s]: [[5.343525876992938, 60.49938845755901], [10.07289479605844, 3536.2041661236913]]
+    elapsed=18.564 s
+    vs coast: final separation change=-61518.714614 m; speed change=-67.259420 m/s (negative means improvement)
+
+SUMMARY (NEW STATES ONLY; ORIGINAL CONTROL EXCLUDED)
+best_overall: 7 tried; 7 surface-safe; 1 strict; 2 loose; 6 improved BOTH final metrics vs coast.
+  Final separation range: 16.013251 to 41209.671972 m; speed range: 0.036592 to 5.224432 m/s.
+best_coarse: 7 tried; 7 surface-safe; 0 strict; 0 loose; 6 improved BOTH final metrics vs coast.
+  Final separation range: 1339.364978 to 122184.226623 m; speed range: 0.033195 to 5.457583 m/s.
+best_position: 7 tried; 7 surface-safe; 0 strict; 0 loose; 0 improved BOTH final metrics vs coast.
+  Final separation range: 0.188274 to 41171.615808 m; speed range: 5.224552 to 942.430255 m/s.
+best_velocity: 7 tried; 7 surface-safe; 0 strict; 0 loose; 7 improved BOTH final metrics vs coast.
+  Final separation range: 1342.174880 to 123129.685464 m; speed range: 0.021371 to 3.085398 m/s.
+
+INTERPRETATION
+1/28 new-state weight/state pairs met strict rendezvous criteria.
+Finite, non-colliding output does not by itself mean a good rendezvous.
+Near-start cases may already be close: use coast comparison rather than final distance alone.
+
+LIMITATIONS AND MODEL OBSERVATIONS
+- Deterministic hand-selected states, one optimizer seed; not Monte Carlo success probabilities.
+- Two signed scalar burns, each bounded at 1000 m/s.
+- Burns follow instantaneous Earth-relative velocity; still not general 3-axis controls.
+- Invalid burn sequences receive positive infinity.
+- Original DOP853 rtol=1e-6 and coordinate scales are unchanged. Additional numerical checks,
+  if performed, are recorded separately in report_checks.json; these are not flight-validated results.
+- Minimum distances and surface checks are sampled; no continuous collision guarantee.
+- No atmosphere, thrust duration, navigation error or collision avoidance constraints.
+- Failure cannot isolate weight quality from control restrictions, optimizer convergence or numerics.
+- Delta-v is a fuel proxy, not propellant mass.
+
+Reproduce: python -B -u validate_sweep_weights.py --source outputs\weight_sweep_fixed_sun_20261029_144240
+Machine-readable: configuration.json, results.json, results.csv (flushed each trial).

@@ -3,6 +3,7 @@
 \usepackage[T1]{fontenc}
 \usepackage{amsmath,amssymb}
 \usepackage{booktabs}
+\usepackage{graphicx}
 \usepackage{enumitem}
 \usepackage[hidelinks]{hyperref}
 \setlist[itemize]{nosep,topsep=4pt}
@@ -337,46 +338,276 @@ the motion around Earth easier to see without changing the calculated
 trajectories or burn directions.
 
 \section{Simulation Checks}
-\prompt{Present checks actually performed and their outcomes. Useful checks
-include a circular-orbit reference case, conservation of energy and angular
-momentum between burns, and repeating a candidate trajectory with tighter
-solver tolerances. Explain what each check establishes.}
-\begin{itemize}
-  \item Suggested figure: reference orbit or conservation error over time.
-  \item Report whether numerical differences are small relative to the
-        rendezvous tolerances used in the report.
-\end{itemize}
+The implementation was checked using 28 automated tests, all of which
+passed. These checks are described in Appendix~\ref{app:implementation_checks}.
+The following checks focus on the numerical accuracy of the simulated
+motion and the reported rendezvous results.
+
+\subsection{Circular-orbit reference case}
+For the 2 dimensional model, I tested a circular orbit with a radius of
+$7.0\times10^6\ \mathrm{m}$ and an initial speed of
+$\sqrt{\mu/r}$. I propagated the spacecraft for one orbital period,
+approximately $5828.52\ \mathrm{s}$, using the setting defined for \texttt{solve\_ivp} in the previous section.
+The simulated position was compared with the analytical circular motion
+at 1000 output times. The maximum position difference was $18.94\ \mathrm{m}$,
+and the difference after one full orbit was $15.97\ \mathrm{m}$.
+The maximum relative changes in specific orbital energy and angular
+momentum were $2.12\times10^{-6}$ and $1.06\times10^{-6}$, respectively.
+This provides a reference check for the original Earth-only model.
+
+\subsection{Sensitivity to numerical tolerances}
+The solver calculates an approximation of the spacecraft motion.
+I therefore checked whether using lower numerical tolerances would
+significantly change the simulated results, particularly whether
+attempts previously classified as successful or unsuccessful would
+change classification. This check was performed for the 3 dimensional
+model, but the same procedure can also be applied to the 2 dimensional
+model.
+
+The validation experiments in Section 5 tested four sets of weights
+on eight retained initial-state cases, giving 32 burn sequences in the
+reported dataset. I simulated all 32 sequences again with tighter numerical tolerances, which require
+the solver to control its calculation error more closely. The burn
+times and magnitudes stayed the same; only the accuracy settings
+changed. The gravitational-body motion was also recalculated with
+the tighter settings. The settings are listed in Appendix A.
+
+In the original simulations, two of the 32 retained attempts finished within
+1000 m of the target with a relative speed no greater than
+$1\ \mathrm{m\,s^{-1}}$. The lower tolerances gave the same
+two passes and 30 failures. I then simulated the two passing sequences
+once more with a still lower relative tolerance, and both continued to pass.
+
+The calculated distances did change, even though the success results
+did not. Table~\ref{tab:tolerance_checks} shows both passing
+attempts from this final check, all using the overall-winning weights. For the 1 km initial
+offset, the final separation changed from approximately 16 m to 75 m.
+Both values are below the 1000 m limit defined earlier. Thus, lowering
+the tolerances changed some calculated final distances but did not
+change which of the tested attempts met the rendezvous criterion.
+
+I also wanted to assess whether the additional accuracy would justify
+the extra computation required by lower tolerances. However, runtime
+was not measured, so the trade-off between accuracy and computation
+time was not quantified. For stricter rendezvous requirements, lower
+tolerances may be necessary to keep numerical errors small enough
+to assess success reliably.
+
+\begin{table}[htbp]
+\centering
+\caption{Original results and the final, tighter-tolerance check for the two
+successful attempts using the overall-winning weights. Burn times and
+magnitudes are unchanged.}
+\label{tab:tolerance_checks}
+\begin{tabular}{lrrrr}
+\toprule
+Initial case & \multicolumn{2}{c}{Original} & \multicolumn{2}{c}{Tighter check}\\
+ & $e_r$ (m) & $e_v$ (m/s) & $e_r$ (m) & $e_v$ (m/s)\\
+\midrule
+1 km along-track & 16.0 & 0.037 & 74.6 & 0.039\\
+10 km along-track & 149.5 & 0.251 & 172.8 & 0.243\\
+\bottomrule
+\end{tabular}
+\end{table}
 
 \section{Experiments and Results}
-\subsection{Baseline and best trajectory found}
-\prompt{Compare a clearly defined baseline, such as no burns or a manual
-strategy, with the best sequence found for the same initial conditions
-and final time. Fill the table with verified values and identify units.}
-\begin{table}[htbp]
-  \centering
-  \caption{Rendezvous performance. Blank cells await verified results.}
-  \begin{tabular}{lccc}
-    \toprule
-    Strategy & $e_r$ (m) & $e_v$ (m/s) & Total $\Delta v$ (m/s)\\
-    \midrule
-    Baseline & & & \\
-    Best sequence found & & & \\
-    \bottomrule
-  \end{tabular}
-\end{table}
-\begin{itemize}
-  \item Plot both trajectories with burn locations and final positions.
-  \item Plot separation and relative speed against time, marking burns.
-  \item List each selected burn's time, signed magnitude, and direction.
-  \item State explicitly whether both success tolerances were met.
-\end{itemize}
+\subsection{Experiment setup and weight selection}
+For these experiments, I used the 3 dimensional model with the Sun fixed
+at the origin and Earth, the Moon and Jupiter moving under gravity.
+The mission duration was $3600\ \mathrm{s}$, with two burns bounded
+between $-1000$ and $1000\ \mathrm{m\,s^{-1}}$ each. The saved initial
+body states, solver settings and optimizer seed of 42 were reused
+throughout the sweep and validation. Earlier experiments with different
+burn directions or magnitude limits were kept separate.
 
-\subsection{Selected comparisons}
-\prompt{Choose only comparisons that answer your research question and
-fit the available time. Possible variables include burn count, objective
-weights, or search budget. Keep other conditions fixed. For a stochastic
-search, use repeated seeds if assessing reliability. Report unsuccessful
-cases when they help explain a limitation.}
+The initial state used to select the weights was
+\begin{align*}
+\text{Chaser: } &[7000000,-500000,300000,0,7400,500],\\
+\text{Target: } &[7000000,0,0,0,7546,0],
+\end{align*}
+where the entries are $[x,y,z,v_x,v_y,v_z]$ relative to Earth, in metres
+and metres per second. The initial search tested 1000 weight combinations,
+with each of the three weights taking one of 10 values from 0.001 to 1,000,000,
+increasing by a factor of 10 between values. Then 312 additional refined combinations
+were tested within a smaller range. In the end, all 1312 trials returned finite
+results with valid burns and passed the sampled surface check. This
+status does not mean that they achieved rendezvous.
+
+To compare results obtained with different weights, I used a similar
+dimensionless comparison score for every trial:
+
+\begin{equation}
+S=\left(\frac{e_r}{100\ \mathrm{m}}\right)^2
+ +\left(\frac{e_v}{0.1\ \mathrm{m\,s^{-1}}}\right)^2
+ +\frac{\Delta v_{\mathrm{total}}}{500\ \mathrm{m\,s^{-1}}}.
+\end{equation}
+
+Here, $e_r$ and $e_v$ are the final separation and relative speed from each trial.
+The raw cost values from differently weighted objectives were not used to rank
+different weight tuples directly. This comparison score essentially makes all three
+values being measured for cost have the same impact.
+
+I selected four weight tuples from the sweep: the lowest comparison
+score overall, the lowest comparison score from the first 1000 comparisons, the
+lowest final position error, and the lowest final velocity error.
+These weights were saved before testing the additional initial states.
+Table~\ref{tab:selected_weights} lists the selected values and their
+subsequent validation results.
+
+\begin{table}[htbp]
+\centering
+\caption{Selected weights and project-criterion passes across the seven
+new initial states. The original selection case is excluded from the counts.}
+\label{tab:selected_weights}
+\begin{tabular}{lrrrr}
+\toprule
+Selection & $\omega_r$ & $\omega_v$ & $\omega_{\Delta v}$ & Passes\\
+\midrule
+Overall (All 1312) & 0.0075 & 5000 & 2.5 & 2/7\\
+First 1000 & 0.001 & 10000 & 10 & 0/7\\
+Position & 1 & 0.1 & 1 & 0/7\\
+Velocity & 0.005 & 75000 & 2.5 & 0/7\\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Results for the original selection case}
+Table~\ref{tab:selection_case} compares the four selected weight tuples
+on the original initial states. None met the project rendezvous criterion.
+The overall-winning sequence applied a $+984.30\ \mathrm{m\,s^{-1}}$
+burn at $61.67\ \mathrm{s}$ and a $-900.70\ \mathrm{m\,s^{-1}}$ burn
+at $354.19\ \mathrm{s}$. Its minimum sampled separation was approximately
+24.38 km during the trajectory, but it finished approximately 563.50 km
+from the target. Thus, its closest approach was not a terminal rendezvous.
+
+The no-burn trajectory for this initial state entered Earth's sampled
+surface. Its final separation was approximately 2493.54 km and its
+relative speed was $2114.99\ \mathrm{m\,s^{-1}}$, but these terminal
+values come from continuing the point-mass simulation after surface
+intersection. They do not describe a physically flyable coast trajectory.
+
+\begin{table}[htbp]
+\centering
+\caption{Results for the original weight-selection experiment.}
+\label{tab:selection_case}
+\begin{tabular}{lrrr}
+\toprule
+Selection & Final separation (km) & Relative speed (m/s) & Total $\Delta v$ (m/s)\\
+\midrule
+Overall (1312) & 563.50 & 134.36 & 1885.00\\
+First 1000 & 563.77 & 133.95 & 1898.36\\
+Position & 563.39 & 390.53 & 1222.83\\
+Velocity & 564.49 & 133.90 & 1662.79\\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Validation on different initial states}
+The validation analysis includes the four selected weight tuples on the original case
+and seven new cases, giving 32 powered optimization trials. For
+each of the eight retained initial-state cases, I also simulated the spacecraft
+motion without any burns to create a baseline to compare the final results
+to. For each combination of weights and initial states, I searched for new
+burn times and magnitudes.
+
+The new cases included along-track offsets of 1 km and 10 km,
+a radial offset, a cross-track offset, a mixed position and velocity
+offset, a higher target orbit, and an inclined target orbit. The full
+initial states, weights, selected burns and measurements are recorded
+in Appendix~\ref{app:validation_data}. Table~\ref{tab:new_cases} shows
+the production results for the overall-winning weights, and
+Figure~\ref{fig:validation_comparison} compares their final errors
+with the no-burn controls.
+
+\begin{table}[htbp]
+\centering
+\caption{Production validation results using the overall-winning weights.
+A pass requires both $e_r\leq1000$ m and $e_v\leq1$ m/s.}
+\label{tab:new_cases}
+\begin{tabular}{lrrrl}
+\toprule
+Case & $e_r$ (m) & $e_v$ (m/s) & Total $\Delta v$ (m/s) & Pass\\
+\midrule
+1 km along-track & 16.0 & 0.037 & 6.30 & Yes\\
+10 km along-track & 149.5 & 0.251 & 101.50 & Yes\\
+10 km radial & 2871.1 & 5.224 & 372.01 & No\\
+10 km cross-track & 13639.8 & 0.340 & 18.89 & No\\
+Mixed, about 100 km & 41209.7 & 3.272 & 151.45 & No\\
+Higher target orbit & 2086.6 & 1.972 & 34.99 & No\\
+Inclined target orbit & 6166.4 & 1.216 & 758.70 & No\\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Figure~\ref{fig:successful_trajectories} shows the two successful
+attempts using the overall-winning weights. The orbit views show
+their motion around Earth, while the close-ups show the chaser's
+position relative to the target. The paths nearly overlap at the
+scale of the orbit, so the close-ups make their separation easier
+to see.
+
+\begin{figure}[p]
+\centering
+\includegraphics[width=\linewidth,height=0.78\textheight,keepaspectratio]{outputs/weight_validation_fixed_sun_20261029_144240/report_successful_trajectories.pdf}
+\caption{Successful validation attempts using the overall-winning weights.
+Each row shows an Earth-centred orbit view (left) and the chaser's
+motion relative to the target (right). Both views are $x$--$y$
+projections of the 3 dimensional trajectories; the final separation
+and relative speed use all three components. Numbered diamonds in
+the close-ups mark the two burns. The target is at the origin in
+each close-up.}
+\label{fig:successful_trajectories}
+\end{figure}
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=\linewidth]{outputs/weight_validation_fixed_sun_20261029_144240/report_validation.png}
+\caption{Final separation and relative speed for the seven new
+cases, comparing the overall-winning weights with no burns. The vertical
+scales are logarithmic; dotted lines show the project thresholds.}
+\label{fig:validation_comparison}
+\end{figure}
+
+The overall-winning weights also achieved rendezvous in the 1 km
+and 10 km along-track cases, whereas both no-burn baselines failed.
+For the 1 km case, the optimized burns reduced the final separation
+from 2568.4 m to 16.0 m and the relative speed from
+$2.011\ \mathrm{m\,s^{-1}}$ to $0.037\ \mathrm{m\,s^{-1}}$.
+For the 10 km case, they reduced the final separation from 91560.0 m
+to 149.5 m and the relative speed from $83.754\ \mathrm{m\,s^{-1}}$
+to $0.251\ \mathrm{m\,s^{-1}}$.
+
+For the successful 1 km case, the selected burns were
+$+3.127\ \mathrm{m\,s^{-1}}$ at $60.014\ \mathrm{s}$ and
+$-3.173\ \mathrm{m\,s^{-1}}$ at $216.811\ \mathrm{s}$.
+Figure~\ref{fig:successful_history} shows its separation and relative
+speed over the mission. The lower-tolerance recheck in
+Table~\ref{tab:tolerance_checks} also met the secondary, stricter
+criterion of 100 m and $0.1\ \mathrm{m\,s^{-1}}$.
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.9\linewidth]{outputs/weight_validation_fixed_sun_20261029_144240/report_success_history.png}
+\caption{Production separation and relative speed for the 1 km along-track
+case using the overall-winning weights. Dashed lines mark the two burns;
+dotted lines show the project success thresholds.}
+\label{fig:successful_history}
+\end{figure}
+
+Across the seven new states, the best weights from the initial 1000
+combinations, the position selection and the velocity selection all
+failed to meet the rendezvous criterion. As an
+example of the difference between matching position and achieving
+rendezvous, the position selection finished the 1 km case with a
+reported separation of 0.188 m but a relative speed of
+$11.829\ \mathrm{m\,s^{-1}}$. It therefore failed the velocity criterion.
+All measurements in this section are from the saved production runs;
+the additional numerical rechecks are reported separately in Section 4.
+The validation used one seed and seven selected new states, so the
+pass counts describe these experiments rather than a general mission
+success probability.
+
+\clearpage
 
 \section{Discussion}
 \prompt{Explain what the results mean, connecting trajectory changes to
@@ -410,5 +641,174 @@ documentation, and any adapted code. Add bibliographic entries as you write.}
 states, solver and optimizer settings, seeds, objective weights, and final
 burn sequence. Include supporting checks or additional plots here when
 they would interrupt the main argument.}
+
+\subsection{Settings for the numerical accuracy checks}
+Table~\ref{tab:tolerance_settings} lists the solver tolerances used for
+the 3 dimensional accuracy checks in Section 4.2. Each repeated
+simulation used the same initial states, burn times and burn magnitudes
+as the original result. Both the gravitational-body trajectories and
+spacecraft trajectories were recalculated; no new optimization was run.
+
+\begin{table}[htbp]
+\centering
+\caption{Solver settings for the original 3 dimensional simulations and
+their numerical accuracy checks.}
+\label{tab:tolerance_settings}
+\begin{tabular}{lrrr}
+\toprule
+Calculation & Relative tolerance & Absolute tolerance & Sequences\\
+\midrule
+Original simulations & $10^{-6}$ & $10^{-6}$ & 32\\
+First accuracy check & $10^{-10}$ & $10^{-8}$ & 32\\
+Final accuracy check & $10^{-12}$ & $10^{-8}$ & 2\\
+\bottomrule
+\end{tabular}
+\end{table}
+
+The final check was restricted to the two retained sequences that passed the
+project criterion. Between the first and final accuracy checks, the
+largest change in final separation for these sequences was less than
+$0.004\ \mathrm{m}$, and the largest change in relative speed was less
+than $5\times10^{-6}\ \mathrm{m\,s^{-1}}$. Both passed the criterion
+in both checks. This comparison concerns numerical propagation of
+fixed burn sequences, rather than the reliability of the optimizer.
+
+\clearpage
+\section{Implementation Checks}
+\label{app:implementation_checks}
+To check that the program behaves as intended, I used 28 automated
+tests covering the body simulation, burns, trajectory plots, weight
+sweep and validation reporting. All 28 tests passed. Table~\ref{tab:implementation_tests}
+shows the five test groups. Individual tests can check several inputs.
+
+\begin{table}[htbp]
+\centering
+\caption{Automated implementation checks. All listed test groups passed.}
+\label{tab:implementation_tests}
+\begin{tabular}{lr}
+\toprule
+Part of the program & Number of tests\\
+\midrule
+Gravitational-body simulation & 5\\
+Earth-relative burns and invalid burn times & 2\\
+Trajectory calculation and visualization & 4\\
+Weight sweep and saved-run handling & 13\\
+Validation scenarios, selection and reporting & 4\\
+\midrule
+Total & 28\\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Gravitational-body simulation}
+For a prescribed set of initial body states, I compare Earth's
+calculated acceleration with a separately evaluated sum of the
+gravitational contributions from the Sun, Moon and Jupiter. I also
+check that the position derivatives equal the supplied velocities
+and that all six derivatives of the Sun's state are zero.
+
+A separate one-day propagation uses 100 output times. This checks
+that the initial state is preserved at the first output, all state
+values remain finite, Earth moves during the simulation, and the
+Sun's position and velocity remain exactly zero at every output.
+The relative difference between the initial and final total energy
+must be less than $10^{-6}$. This energy includes the moving bodies'
+kinetic energy and the gravitational potential energy of the model.
+Total momentum conservation is not required, since the Sun is
+physically held fixed.
+
+The initial-state reader is tested using controlled sample responses
+in the format returned by JPL Horizons. The six position and velocity
+entries must be extracted correctly and multiplied by 1000 to convert
+to SI units. A response with no state vector must be rejected. These
+checks test the reader, not the accuracy of the Horizons data.
+Invalid durations, state-array dimensions, output sample counts,
+nonzero initial Sun states and coincident bodies are also tested.
+
+\subsection{Burn direction and application}
+To isolate the burn calculation, I use a test case with no gravitational
+acceleration. The chaser moves at constant velocity between burns,
+allowing its final position and velocity to be calculated directly.
+A burn is applied at 300 s during a 600 s trajectory. The tested signed
+magnitudes are $+100$, $-100$ and $0\ \mathrm{m\,s^{-1}}$.
+
+Earth's prescribed velocity changes with time in this test. This
+checks that the burn uses Earth's velocity at the actual burn time,
+rather than its initial velocity. The same constant velocity is also
+added to both Earth and the chaser in a second version of each case.
+Their relative motion is unchanged, so the applied velocity change
+must remain the same.
+
+For each case, the calculated final state is compared with the direct
+solution using an absolute tolerance of $10^{-5}$ in the SI state
+components. Both the trajectory reconstruction and candidate scoring
+are also compared with the expected cost to six decimal places.
+This checks the direction, sign, magnitude and timing of the impulse,
+as well as consistency between the two calculation paths.
+
+For both the 2 dimensional and 3 dimensional models, burns outside
+the simulation interval, burns at repeated times, and burns in the
+wrong order must return an infinite cost before any trajectory is
+propagated. The sweep's separate output check accepts magnitudes
+exactly at $\pm1000\ \mathrm{m\,s^{-1}}$ and rejects a magnitude of
+$1000.001\ \mathrm{m\,s^{-1}}$, nonfinite values and unordered times.
+
+\subsection{Trajectory calculation and visualization}
+For a short 3 dimensional trajectory, I compare the cost calculated
+during scoring with the cost obtained when reconstructing the same
+burn sequence for plotting. The values must agree to seven decimal
+places in the test case. The plotted separation is checked against
+the distance calculated directly from the spacecraft states at
+matching times, including differences in the $z$ direction.
+
+The plots are checked for correct positions relative to the Sun and
+Earth, equal scales along the three axes, and use of the specified
+body radii. The figures are rendered to check the complete plotting
+operation.
+
+Additional tests check that the optimizer receives the precomputed
+body trajectories, that the interactive program accepts six-component
+spacecraft states, and that the displayed final and minimum sampled
+separations match the calculated values. A shortened optimization is
+used for the automated integration checks only; the production sweep
+and validation use the full optimizer settings described in the report.
+
+\subsection{Weight sweep and preservation of results}
+The sweep tests check the initial 1000 weight combinations, the refinement
+values and the exclusion of duplicate weight combinations. A
+controlled test also checks that refinement is centred on the best
+result from the initial search. The fixed comparison score is checked using values
+with a directly calculable result, and failed or surface-intersecting
+trials are excluded from selection.
+
+To check reproducibility, the tests verify that a new sweep can reuse
+saved initial body states without another network request. Changes
+to the gravitational-body code must change the recorded model
+identifier, and a saved run with a different identifier must be
+rejected before further trials are started. A dry run must make
+neither a network request nor an optimizer call.
+
+The saved-run tests check that completed trials survive an interruption,
+failed trials are recorded, and a requested trial limit stops further
+work. Resuming must preserve the existing configuration and CSV rows,
+skip completed combinations, and keep the refinement centred on the
+same initial-search result. A CSV with an incomplete final line must be
+rejected without modifying the saved file.
+
+\subsection{Validation selection and classification}
+The validation tests check that the eight scenarios are distinct,
+contain finite six-component states, and include changes to the
+target orbit. Candidate weights must be selected only from the
+saved source-sweep measurements, before the validation cases are used.
+
+For the stricter diagnostic criterion, test cases verify that both
+the final position and velocity limits must be met and that a
+surface-intersecting or failed trial cannot be counted as a pass.
+Reporting is also checked with a deliberately failed trial, so that
+failure information is retained, an incomplete batch remains labelled
+incomplete, and the original selection case is excluded from the
+new-state summary.
+
+\input{outputs/weight_validation_fixed_sun_20261029_144240/appendix_validation_data.tex}
 
 \end{document}

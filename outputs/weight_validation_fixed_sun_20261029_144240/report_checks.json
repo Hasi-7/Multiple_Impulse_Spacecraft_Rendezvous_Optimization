@@ -1,0 +1,324 @@
+{
+  "description": "Independent fixed-schedule replays; no reoptimization or replacement of saved production results",
+  "circular_orbit": {
+    "radius_m": 7000000.0,
+    "period_s": 5828.519867788797,
+    "rtol": 1e-06,
+    "atol": 1e-06,
+    "maximum_position_error_m": 18.93687169506384,
+    "final_position_error_m": 15.965287321728262,
+    "maximum_relative_energy_drift": 2.1204500844093707e-06,
+    "maximum_relative_angular_momentum_drift": 1.0602262918699191e-06
+  },
+  "replay_atol": 1e-08,
+  "tight_replays": [
+    {
+      "scenario": "original_control",
+      "candidate": "best_overall",
+      "rtol": 1e-10,
+      "final_separation_m": 563506.1449829463,
+      "final_relative_speed_m_s": 134.2887370559529,
+      "minimum_sampled_surface_altitude_m": 536916.5963881556,
+      "project_pass": false
+    },
+    {
+      "scenario": "original_control",
+      "candidate": "best_coarse",
+      "rtol": 1e-10,
+      "final_separation_m": 563785.5501351991,
+      "final_relative_speed_m_s": 133.89740915678962,
+      "minimum_sampled_surface_altitude_m": 537056.0039236201,
+      "project_pass": false
+    },
+    {
+      "scenario": "original_control",
+      "candidate": "best_position",
+      "rtol": 1e-10,
+      "final_separation_m": 563393.0768326183,
+      "final_relative_speed_m_s": 390.17675811449396,
+      "minimum_sampled_surface_altitude_m": 255256.87097254675,
+      "project_pass": false
+    },
+    {
+      "scenario": "original_control",
+      "candidate": "best_velocity",
+      "rtol": 1e-10,
+      "final_separation_m": 564515.6661908985,
+      "final_relative_speed_m_s": 133.86355706457138,
+      "minimum_sampled_surface_altitude_m": 526809.6430244874,
+      "project_pass": false
+    },
+    {
+      "scenario": "along_track_1km",
+      "candidate": "best_overall",
+      "rtol": 1e-10,
+      "final_separation_m": 74.64385690852178,
+      "final_relative_speed_m_s": 0.03872794863669115,
+      "minimum_sampled_surface_altitude_m": 628793.8764214786,
+      "project_pass": true
+    },
+    {
+      "scenario": "along_track_1km",
+      "candidate": "best_coarse",
+      "rtol": 1e-10,
+      "final_separation_m": 1328.1448219651418,
+      "final_relative_speed_m_s": 0.07009274894897874,
+      "minimum_sampled_surface_altitude_m": 628150.1370923668,
+      "project_pass": false
+    },
+    {
+      "scenario": "along_track_1km",
+      "candidate": "best_position",
+      "rtol": 1e-10,
+      "final_separation_m": 8.865804425111453,
+      "final_relative_speed_m_s": 11.822381334770785,
+      "minimum_sampled_surface_altitude_m": 627907.2105159853,
+      "project_pass": false
+    },
+    {
+      "scenario": "along_track_1km",
+      "candidate": "best_velocity",
+      "rtol": 1e-10,
+      "final_separation_m": 1330.7314450535198,
+      "final_relative_speed_m_s": 0.06119891824006181,
+      "minimum_sampled_surface_altitude_m": 628149.194985115,
+      "project_pass": false
+    },
+    {
+      "scenario": "along_track_10km_velocity_error",
+      "candidate": "best_overall",
+      "rtol": 1e-10,
+      "final_separation_m": 172.82994871803805,
+      "final_relative_speed_m_s": 0.2433698510622533,
+      "minimum_sampled_surface_altitude_m": 627602.3111320585,
+      "project_pass": true
+    },
+    {
+      "scenario": "along_track_10km_velocity_error",
+      "candidate": "best_coarse",
+      "rtol": 1e-10,
+      "final_separation_m": 14229.849138436897,
+      "final_relative_speed_m_s": 0.4239235705687326,
+      "minimum_sampled_surface_altitude_m": 620669.5471654702,
+      "project_pass": false
+    },
+    {
+      "scenario": "along_track_10km_velocity_error",
+      "candidate": "best_position",
+      "rtol": 1e-10,
+      "final_separation_m": 115.30162749569602,
+      "final_relative_speed_m_s": 129.8532259428036,
+      "minimum_sampled_surface_altitude_m": 607313.3062112108,
+      "project_pass": false
+    },
+    {
+      "scenario": "along_track_10km_velocity_error",
+      "candidate": "best_velocity",
+      "rtol": 1e-10,
+      "final_separation_m": 14239.131722363589,
+      "final_relative_speed_m_s": 0.40266750009304636,
+      "minimum_sampled_surface_altitude_m": 620665.2575190803,
+      "project_pass": false
+    },
+    {
+      "scenario": "radial_10km_velocity_error",
+      "candidate": "best_overall",
+      "rtol": 1e-10,
+      "final_separation_m": 2872.332092270737,
+      "final_relative_speed_m_s": 5.243066266033706,
+      "minimum_sampled_surface_altitude_m": 623702.6434142096,
+      "project_pass": false
+    },
+    {
+      "scenario": "radial_10km_velocity_error",
+      "candidate": "best_coarse",
+      "rtol": 1e-10,
+      "final_separation_m": 6436.902759483878,
+      "final_relative_speed_m_s": 0.24817843633632053,
+      "minimum_sampled_surface_altitude_m": 621224.2042265162,
+      "project_pass": false
+    },
+    {
+      "scenario": "radial_10km_velocity_error",
+      "candidate": "best_position",
+      "rtol": 1e-10,
+      "final_separation_m": 77.31792892509164,
+      "final_relative_speed_m_s": 83.9342155462277,
+      "minimum_sampled_surface_altitude_m": 617091.591491078,
+      "project_pass": false
+    },
+    {
+      "scenario": "radial_10km_velocity_error",
+      "candidate": "best_velocity",
+      "rtol": 1e-10,
+      "final_separation_m": 6458.226502589785,
+      "final_relative_speed_m_s": 0.19884946965726683,
+      "minimum_sampled_surface_altitude_m": 621251.3656873433,
+      "project_pass": false
+    },
+    {
+      "scenario": "cross_track_10km",
+      "candidate": "best_overall",
+      "rtol": 1e-10,
+      "final_separation_m": 13647.793270555154,
+      "final_relative_speed_m_s": 0.5293083943653123,
+      "minimum_sampled_surface_altitude_m": 628818.856448032,
+      "project_pass": false
+    },
+    {
+      "scenario": "cross_track_10km",
+      "candidate": "best_coarse",
+      "rtol": 1e-10,
+      "final_separation_m": 13641.422809035339,
+      "final_relative_speed_m_s": 0.48382799062324194,
+      "minimum_sampled_surface_altitude_m": 628818.8565447778,
+      "project_pass": false
+    },
+    {
+      "scenario": "cross_track_10km",
+      "candidate": "best_position",
+      "rtol": 1e-10,
+      "final_separation_m": 13648.08230809745,
+      "final_relative_speed_m_s": 5.062444416472992,
+      "minimum_sampled_surface_altitude_m": 628804.944959363,
+      "project_pass": false
+    },
+    {
+      "scenario": "cross_track_10km",
+      "candidate": "best_velocity",
+      "rtol": 1e-10,
+      "final_separation_m": 13645.372447872298,
+      "final_relative_speed_m_s": 0.4444361302430152,
+      "minimum_sampled_surface_altitude_m": 628818.8564950777,
+      "project_pass": false
+    },
+    {
+      "scenario": "mixed_100km",
+      "candidate": "best_overall",
+      "rtol": 1e-10,
+      "final_separation_m": 41203.144335037105,
+      "final_relative_speed_m_s": 3.521854420748294,
+      "minimum_sampled_surface_altitude_m": 611466.0753706452,
+      "project_pass": false
+    },
+    {
+      "scenario": "mixed_100km",
+      "candidate": "best_coarse",
+      "rtol": 1e-10,
+      "final_separation_m": 121981.92826124076,
+      "final_relative_speed_m_s": 5.938496028093535,
+      "minimum_sampled_surface_altitude_m": 562302.5345168207,
+      "project_pass": false
+    },
+    {
+      "scenario": "mixed_100km",
+      "candidate": "best_position",
+      "rtol": 1e-10,
+      "final_separation_m": 41176.66282771425,
+      "final_relative_speed_m_s": 942.3811415074617,
+      "minimum_sampled_surface_altitude_m": 541599.1925552562,
+      "project_pass": false
+    },
+    {
+      "scenario": "mixed_100km",
+      "candidate": "best_velocity",
+      "rtol": 1e-10,
+      "final_separation_m": 122918.73221039643,
+      "final_relative_speed_m_s": 3.550043197476117,
+      "minimum_sampled_surface_altitude_m": 561995.2326411521,
+      "project_pass": false
+    },
+    {
+      "scenario": "higher_orbit_8000km",
+      "candidate": "best_overall",
+      "rtol": 1e-10,
+      "final_separation_m": 2115.426168558945,
+      "final_relative_speed_m_s": 2.015592258948302,
+      "minimum_sampled_surface_altitude_m": 1626833.4836318027,
+      "project_pass": false
+    },
+    {
+      "scenario": "higher_orbit_8000km",
+      "candidate": "best_coarse",
+      "rtol": 1e-10,
+      "final_separation_m": 2212.5690180477804,
+      "final_relative_speed_m_s": 1.9720533696113678,
+      "minimum_sampled_surface_altitude_m": 1627039.8303205082,
+      "project_pass": false
+    },
+    {
+      "scenario": "higher_orbit_8000km",
+      "candidate": "best_position",
+      "rtol": 1e-10,
+      "final_separation_m": 2120.3562196189046,
+      "final_relative_speed_m_s": 721.4626030695018,
+      "minimum_sampled_surface_altitude_m": 1602620.456203336,
+      "project_pass": false
+    },
+    {
+      "scenario": "higher_orbit_8000km",
+      "candidate": "best_velocity",
+      "rtol": 1e-10,
+      "final_separation_m": 2107.646062700625,
+      "final_relative_speed_m_s": 1.9748175363090672,
+      "minimum_sampled_surface_altitude_m": 1627359.7601475306,
+      "project_pass": false
+    },
+    {
+      "scenario": "inclined_target_20deg",
+      "candidate": "best_overall",
+      "rtol": 1e-10,
+      "final_separation_m": 6166.512687649617,
+      "final_relative_speed_m_s": 1.21577193762477,
+      "minimum_sampled_surface_altitude_m": 627741.9206792563,
+      "project_pass": false
+    },
+    {
+      "scenario": "inclined_target_20deg",
+      "candidate": "best_coarse",
+      "rtol": 1e-10,
+      "final_separation_m": 6274.2888683063275,
+      "final_relative_speed_m_s": 1.2092099602255122,
+      "minimum_sampled_surface_altitude_m": 626807.031006203,
+      "project_pass": false
+    },
+    {
+      "scenario": "inclined_target_20deg",
+      "candidate": "best_position",
+      "rtol": 1e-10,
+      "final_separation_m": 6163.902046937043,
+      "final_relative_speed_m_s": 417.14690363466076,
+      "minimum_sampled_surface_altitude_m": 610140.0148527231,
+      "project_pass": false
+    },
+    {
+      "scenario": "inclined_target_20deg",
+      "candidate": "best_velocity",
+      "rtol": 1e-10,
+      "final_separation_m": 13866.125524920093,
+      "final_relative_speed_m_s": 1.2114592179562993,
+      "minimum_sampled_surface_altitude_m": 621809.0612994004,
+      "project_pass": false
+    }
+  ],
+  "tighter_replays_of_production_passes": [
+    {
+      "scenario": "along_track_1km",
+      "candidate": "best_overall",
+      "rtol": 1e-12,
+      "final_separation_m": 74.64713733022312,
+      "final_relative_speed_m_s": 0.038729559968890256,
+      "minimum_sampled_surface_altitude_m": 628793.8839082438,
+      "project_pass": true
+    },
+    {
+      "scenario": "along_track_10km_velocity_error",
+      "candidate": "best_overall",
+      "rtol": 1e-12,
+      "final_separation_m": 172.83068047219783,
+      "final_relative_speed_m_s": 0.24337010102906476,
+      "minimum_sampled_surface_altitude_m": 627602.3313037567,
+      "project_pass": true
+    }
+  ]
+}

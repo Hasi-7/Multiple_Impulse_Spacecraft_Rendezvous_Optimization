@@ -1,0 +1,16 @@
+[
+  {
+    "scenario": "along_track_1km",
+    "candidate": "best_overall",
+    "final_separation_m": 16.013251273142913,
+    "final_relative_speed_m_s": 0.03659241076089597,
+    "description": "Original-tolerance x-y projections of saved burns; no optimization"
+  },
+  {
+    "scenario": "along_track_10km_velocity_error",
+    "candidate": "best_overall",
+    "final_separation_m": 149.4977424815711,
+    "final_relative_speed_m_s": 0.25110122698552095,
+    "description": "Original-tolerance x-y projections of saved burns; no optimization"
+  }
+]

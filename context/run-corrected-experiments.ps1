@@ -32,16 +32,16 @@ try {
         throw 'Sweep is incomplete; validation will not start.'
     }
 
-    Save-RunStatus 'validation' 'Reoptimizing four selected weight candidates on nine scenarios'
-    Write-Host "STAGE 3: All 36 powered validation trials and nine coast controls -> $validationPath" -ForegroundColor Cyan
+    Save-RunStatus 'validation' 'Reoptimizing four selected weight candidates on eight scenarios'
+    Write-Host "STAGE 3: All 32 powered validation trials and eight coast controls -> $validationPath" -ForegroundColor Cyan
     & $pythonPath -B -u validate_sweep_weights.py --source $sweepPath --output $validationPath | Out-Default
     if ($LASTEXITCODE -ne 0) { throw 'Validation failed.' }
     $results = Get-Content -LiteralPath "$validationPath/results.json" -Raw | ConvertFrom-Json
     $report = Get-Content -LiteralPath "$validationPath/summary.txt" -Raw
-    if ($results.trials.Count -ne 36 -or @($results.coasts.PSObject.Properties).Count -ne 9 -or $report -notmatch 'Complete: True') {
+    if ($results.trials.Count -ne 32 -or @($results.coasts.PSObject.Properties).Count -ne 8 -or $report -notmatch 'Complete: True') {
         throw 'Validation did not save the expected complete batch.'
     }
-    Save-RunStatus 'completed' 'Sweep and 36 validation trials finished; inspect individual statuses and report'
+    Save-RunStatus 'completed' 'Sweep and 32 validation trials finished; inspect individual statuses and report'
     Write-Host "ALL EXPERIMENTS FINISHED. Report: $validationPath/summary.txt" -ForegroundColor Green
 } catch {
     Save-RunStatus 'failed' $_.Exception.Message
